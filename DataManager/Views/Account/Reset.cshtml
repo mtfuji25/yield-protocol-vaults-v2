@@ -1,0 +1,26 @@
+﻿@model ResetPassword
+
+<p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "login" }))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <fieldset class="field">
+        @Html.LabelFor(m => m.Password)
+        @Html.InputFor(m => m.Password)
+    </fieldset>
+    <fieldset class="field">
+        @Html.LabelFor(m => m.ConfirmPassword)
+        @Html.InputFor(m => m.ConfirmPassword)
+    </fieldset>
+    <fieldset class="footer">
+        <button type="submit" class="button">Reset</button>
+        @Html.InputFor(m => m.Code)
+        @Html.InputFor(m => m.Id)
+    </fieldset>
+}

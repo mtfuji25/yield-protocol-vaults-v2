@@ -1,0 +1,7 @@
+﻿<p>If the site is experiencing technical difficulties with search, you can manually rebuild now:</p>
+@using (Html.BeginForm("Rebuild", null, FormMethod.Post))
+{
+    <fieldset>
+        <button type="submit">Rebuild</button> <strong>Please Note:</strong> The rebuilding process can take several minutes before it is complete.
+    </fieldset>
+}

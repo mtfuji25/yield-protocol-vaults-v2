@@ -1,0 +1,66 @@
+﻿@model MarkType
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.MarkTypeID != 0;
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing Mark Type <strong>@Model.MarkTypeName</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw" title="Tip"></i> Enter the new Mark Type details below.</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.MarkTypeName)</th>
+                <td>@Html.InputFor(m => m.MarkTypeName)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.MarkSizeTypeID)</th>
+                <td>@Html.SelectFor(m => m.MarkSizeTypeID, new SelectList(ViewBag.MarkSizeTypes as List<SelectListItem>, "Value", "Text", Model.MarkSizeTypeID))</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.WeightFormulaTypeID)</th>
+                <td>@Html.SelectFor(m => m.WeightFormulaTypeID, new SelectList(ViewBag.WeightFormulaTypes as List<SelectListItem>, "Value", "Text", Model.WeightFormulaTypeID))</td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.MarkTypeID)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

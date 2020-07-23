@@ -1,0 +1,141 @@
+﻿@model PagedList.IPagedList<Contact>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("page", "1"),
+      new KeyValuePair<string, object>("query", ""),
+      new KeyValuePair<string, object>("show", "40"),
+      new KeyValuePair<string, object>("sort", Request.QueryString["q"] != null ? "hit" : "display-name"),
+      new KeyValuePair<string, object>("type", "")
+    });
+
+    // Variables
+    string order = parameters["order"].ToString();
+    string page = parameters["page"].ToString();
+    string query = parameters["query"].ToString();
+    string show = parameters["show"].ToString();
+    string sort = parameters["sort"].ToString();
+    string type = parameters["type"].ToString();
+
+    bool isSearch = !string.IsNullOrEmpty(query);
+    int results = 0;
+    if (isSearch)
+    {
+        results = (int)ViewBag.Results;
+    }
+}
+
+<p>
+    @if (isSearch)
+    {
+        <a href="@Url.Action("Index")"><i class="fas fa-arrow-left fa-fw"></i> Back</a><span> | Found @results result@(results == 1 ? "" : "s")</span>
+    }
+    else
+    {
+        <a href="@Url.Action("Add", parameters)"><i class="fas fa-plus fa-fw"></i> Add a New Contact</a>
+    }
+</p>
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "filter" }))
+    {
+        <fieldset>
+            <label for="show">Show</label>
+            @Html.DropDownList("show", Options.Show(show))
+            @if (isSearch)
+            {
+                @Html.Hidden("query", query)
+            }
+            else
+            {
+                @Html.DropDownList("type", new SelectList(ViewBag.ContactTypes as List<SelectListItem>, "Value", "Text", type))
+            }
+            @Html.Hidden("page", page)
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "search" }))
+    {
+        <fieldset>
+            <input class="autocomplete" data-target="#cid" data-url="/Suggest/Contacts" id="terms" maxlength="128" name="query" placeholder="Search Contacts…" required="required" type="text" value="@query" />
+            <button type="submit"><i class="fas fa-search"></i></button>
+            @Html.Hidden("cid")
+        </fieldset>
+    }
+    @using (Html.BeginForm("SaveViewSetting", "Account", FormMethod.Post, new { @class = "ajax", data_ajax_action = "hide", data_ajax_done="restoreIcon", id = "column-chooser" }))
+    {
+        <fieldset>
+            @Html.ColumnChoser(ViewBag.Columns as List<SelectListItem>)
+            @Html.Hidden("Path", Request.Url.AbsolutePath)
+            <button type="reset"><i class="fas fa-times fa-fw"></i> Close</button>
+            <button type="submit"><i class="fas fa-save fa-fw"></i> Save</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Display Name", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Company", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "First Name", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Last Name", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Home Phone", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Work Phone", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Mobile Phone", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Fax", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Email", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Address", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "City", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "State", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Zip", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Contact Type", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Contact item in Model)
+            {
+                <tr data-href="@Url.Action("Edit", parameters.CopyAndAdd("guid", item.ContactID))">
+                    <td>@item.DisplayName</td>
+                    <td>@item.Company</td>
+                    <td>@item.FirstName</td>
+                    <td>@item.LastName</td>
+                    <td>@item.HomePhone</td>
+                    <td>@item.WorkPhone</td>
+                    <td>@item.MobilePhone</td>
+                    <td>@item.FaxNumber</td>
+                    <td>@item.EMail</td>
+                    <td>@item.StreetAddress</td>
+                    <td>@item.City</td>
+                    <td>@item.State</td>
+                    <td>@item.Zip</td>
+                    <td>@(item.ContactTypeID.HasValue ? item.ContactType.ContactTypeName : string.Empty)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(Model, p => Url.Action("Index", parameters.CopyAndReplace("page", p)), new PagedListRenderOptions
+    {
+        ItemSliceAndTotalFormat = "viewing {0} - {1} of {2}",
+        DisplayItemSliceAndTotal = true,
+        LinkToFirstPageFormat = "« first",
+        LinkToPreviousPageFormat = "‹ previous",
+        LinkToIndividualPageFormat = "{0}",
+        LinkToNextPageFormat = "next ›",
+        LinkToLastPageFormat = "last »"
+    })
+}
+else
+{
+    if (isSearch)
+    {
+        <p>No results found for <strong>@query</strong></p>
+    }
+    else
+    {
+        <p>There are no Contacts at this time.</p>
+    }
+}

@@ -1,0 +1,27 @@
+﻿@model WeightFormulaType
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.WeightFormulaTypeID != 0;
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <fieldset>
+        @Html.LabelFor(m => m.WeightFormulaTypeName)
+        @Html.InputFor(m => m.WeightFormulaTypeName)
+        @Html.HiddenFor(m => m.Action)
+        @if (Existing)
+        {
+            @Html.HiddenFor(m => m.WeightFormulaTypeID)
+        }
+    </fieldset>
+}

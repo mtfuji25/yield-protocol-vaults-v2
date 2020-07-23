@@ -1,0 +1,109 @@
+﻿@model IEnumerable<TimeCard>
+@{
+    DateTime StartOfWeek = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+    DateTime EndOfLastWeek = StartOfWeek.AddDays(-1);
+
+
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("hourly", "false"),
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("sort", "employee"),
+      new KeyValuePair<string, object>("week", EndOfLastWeek.ToShortDateString())
+    });
+
+    // Variables
+    bool hourly = parameters["hourly"].ToString() == "true";
+    string order = parameters["order"].ToString();
+    string sort = parameters["sort"].ToString();
+    string week = parameters["week"].ToString();
+
+    decimal Regular = 0;
+    decimal Overtime = 0;
+    decimal Vacation = 0;
+    decimal Holiday = 0;
+    decimal Total = 0;
+    decimal Unaapproved = 0;
+
+}
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="week">Week Ending</label> @Html.TextBox("week", week, new { @class = "date", data_type = "date" })
+            @Html.CheckBox("hourly", hourly) <label for="hourly">Hourly Only</label>
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+    @using (Html.BeginForm("SaveViewSetting", "Account", FormMethod.Post, new { @class = "ajax", data_ajax_action = "hide", data_ajax_done = "restoreIcon", id = "column-chooser" }))
+    {
+        <fieldset>
+            @Html.ColumnChoser(ViewBag.Columns as List<SelectListItem>)
+            @Html.Hidden("Path", Request.Url.AbsolutePath)
+            <button type="reset"><i class="fas fa-times fa-fw"></i> Close</button>
+            <button type="submit"><i class="fas fa-save fa-fw"></i> Save</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Dept Code", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Department", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Employee", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Status", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Hourly", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Regular", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Overtime", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Vacation", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Holiday", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Total", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Total Unapproved", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (TimeCard item in Model)
+            {
+                Regular += item.RegularHours.Value;
+                Overtime += item.OvertimeHours.Value;
+                Vacation += item.VacationHours.Value;
+                Holiday += item.HolidayHours.Value;
+                Total += item.TotalHours.Value;
+                Unaapproved += item.TotalUnaapproved.Value;
+
+                <tr data-href="@Url.Action("EditTimeCard", parameters.CopyAndAdd("guid", item.TimeCardID))">
+                    <td>@item.DeptCode</td>
+                    <td>@item.Department</td>
+                    <td>@item.Employee.LastName, @item.Employee.FirstName</td>
+                    <td>@item.Status</td>
+                    <td>@Html.CheckBox("hourly_" + item.TimeCardID, item.Hourly, new { @readonly = "readonly" })</td>
+                    <td class="numeric">@item.RegularHours.Value.ToString("F2")</td>
+                    <td class="numeric">@item.OvertimeHours.Value.ToString("F2")</td>
+                    <td class="numeric">@item.VacationHours.Value.ToString("F2")</td>
+                    <td class="numeric">@item.HolidayHours.Value.ToString("F2")</td>
+                    <td class="numeric">@item.TotalHours.Value.ToString("F2")</td>
+                    <td class="numeric">@item.TotalUnaapproved.Value.ToString("F2")</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td class="numeric">@Regular.ToString("F2")</td>
+                <td class="numeric">@Overtime.ToString("F2")</td>
+                <td class="numeric">@Vacation.ToString("F2")</td>
+                <td class="numeric">@Holiday.ToString("F2")</td>
+                <td class="numeric">@Total.ToString("F2")</td>
+                <td class="numeric">@Unaapproved.ToString("F2")</td>
+            </tr>
+        </tfoot>
+    </table>
+}

@@ -1,0 +1,63 @@
+﻿/*GLOBAL RESET*/
+
+html, body, address, blockquote, div, h1, h2, h3, h4, h5, h6, hr, noscript, p, pre, dl, dt, dd, ol, ul, li, table, caption, thead, tfoot, tbody, tr, td, th, form, fieldset, legend, label, a, img, object, q, span, abbr, acronym, del, dfn, em, ins, strong {
+    background: transparent;
+    border: none;
+    font-size: 100%;
+    margin: 0;
+    outline: none;
+    padding: 0;
+    vertical-align: baseline;
+}
+
+a {
+    outline: none;
+    text-decoration: none;
+}
+
+abbr:hover, acronym:hover {
+    border-bottom: 1px dotted #9e9e9c;
+    cursor: help;
+}
+
+address {
+    font-style: normal;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-size: 1em;
+}
+
+fieldset, img {
+    border: medium none;
+}
+
+input, button, select, textarea {
+    font-size: 1em;
+    font-weight: 400;
+}
+
+input[disabled], select[disabled], textarea[disabled] {
+    background: #e3e3e3;
+    color: #000 !important;
+}
+
+textarea {
+    resize: vertical;
+}
+
+label {
+    cursor: pointer;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+:focus {
+    outline: none;
+}

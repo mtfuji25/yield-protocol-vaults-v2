@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Load>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("begin", ""),
+      new KeyValuePair<string, object>("end", ""),
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("range", "week"),
+      new KeyValuePair<string, object>("sort", "date"),
+      new KeyValuePair<string, object>("status", "")
+    });
+
+    // Variables
+    string range = parameters["range"].ToString();
+    string order = parameters["order"].ToString();
+    string sort = parameters["sort"].ToString();
+    string status = parameters["status"].ToString();
+
+    // Select Lists
+    List<SelectListItem> DateRanges = ViewBag.DateRanges as List<SelectListItem>;
+}
+
+<p>
+    <a class="dialog" data-width="600px" href="@Url.Action("AddLoad", parameters)"><i class="fas fa-plus fa-fw"></i> Add Load</a>
+</p>
+
+<div class="manage">
+        @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "filter" }))
+    {
+        <fieldset>
+            <label for="show">Show</label>
+            @Html.DropDownList("status", new SelectList(ViewBag.LoadStatuses as List<SelectListItem>, "Value", "Text", status))
+            @Html.Hidden("range", range)
+            @Html.Hidden("order", order)
+            @Html.Hidden("sort", sort)
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+
+
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="range">Dates:</label> @Html.DropDownList("range", new SelectList(DateRanges, "Value", "Text", range))
+            <span class="date_range">@Html.TextBox("begin", parameters["begin"], new { @class = "date", title = "Start Date" }) - @Html.TextBox("end", parameters["end"], new { @class = "date", title = "End Date" })</span>
+             @Html.Hidden("range", range)
+           <button type="submit">Go</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Delivery Date", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Delivery Time", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Departure Time", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Driver", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Ind. Driver", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Notes", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Contacted", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Load #", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Vehicle", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Job", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Loaded", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Status", null, null, parameters, null)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Load item in Model)
+            {
+                @Html.Partial("_LoadRow", item)
+            }
+        </tbody>
+    </table>
+}

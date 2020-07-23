@@ -1,0 +1,115 @@
+﻿@model IEnumerable<Pour>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("bed", ""),
+      new KeyValuePair<string, object>("begin", ""),
+      new KeyValuePair<string, object>("end", ""),
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("range", "week"),
+      new KeyValuePair<string, object>("sort", "date")
+    });
+
+    // Variables
+    string bed = parameters["bed"].ToString();
+    string range = parameters["range"].ToString();
+    string order = parameters["order"].ToString();
+    string sort = parameters["sort"].ToString();
+
+    // Select Lists
+    List<SelectListItem> DateRanges = ViewBag.DateRanges as List<SelectListItem>;
+}
+
+<p>
+    <a href="@Url.Action("AddPour", parameters)"><i class="fas fa-plus fa-fw"></i> Add New Pour</a>
+</p>
+
+<div class="manage">
+
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="range">Dates:</label> @Html.DropDownList("range", new SelectList(DateRanges, "Value", "Text", range))
+            <span class="date_range">@Html.TextBox("begin", parameters["begin"], new { @class = "date", title = "Start Date" }) - @Html.TextBox("end", parameters["end"], new { @class = "date", title = "End Date" })</span>
+            @Html.DropDownList("bed", new SelectList(ViewBag.Beds as List<SelectListItem>, "Value", "Text", bed))
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+
+    @using (Html.BeginForm("SaveViewSetting", "Account", FormMethod.Post, new { @class = "ajax", data_ajax_action = "hide", data_ajax_done = "restoreIcon", id = "column-chooser" }))
+    {
+        <fieldset>
+            @Html.ColumnChoser(ViewBag.Columns as List<SelectListItem>)
+            @Html.Hidden("Path", Request.Url.AbsolutePath)
+            <button type="reset"><i class="fas fa-times fa-fw"></i> Close</button>
+            <button type="submit"><i class="fas fa-save fa-fw"></i> Save</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Pour Date", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Pour Status", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Pour Time", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Mix", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Bed", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Thickness", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Concrete", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Grout", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "3/8\"", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "0.5\"", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "0.6\"", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Slump/Spread", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Unit Weight", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Concrete Temp", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Yield", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Release Test 1", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Release Test 2", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Release Avg", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "28-Day Test 1", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "28-Day Test 2", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "28-Day Test Avg", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Other Test 1", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Other Test 2", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Other Test Avg", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Other Test Date", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (Pour item in Model)
+            {
+                <tr data-href="@Url.Action("EditPour", parameters.CopyAndAdd("guid", item.PourID))">
+                    <td>@item.PourDate.ToShortDateString()</td>
+                    <td>@item.PourStatu.PourStatusName</td>
+                    <td>@(item.PourTime.HasValue ? item.PourTime.Value.ToShortTimeString() : string.Empty)</td>
+                    <td>@(item.MixID.HasValue ? item.Mix.MixName : string.Empty)</td>
+                    <td>@item.Bed.BedName</td>
+                    <td>@(item.Thickness.HasValue ? item.Thickness.Value.ToString("F2") : string.Empty)</td>
+                    <td>@(item.YardsConcrete.HasValue ? item.YardsConcrete.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.YardsGrout.HasValue ? item.YardsGrout.Value.ToString("F1") : string.Empty)</td>
+                    <td>@item.ThreeInchStrands</td>
+                    <td>@item.FiveInchStrands</td>
+                    <td>@item.SixInchStrands</td>
+                    <td>@(item.Slump.HasValue ? item.Slump.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.UnitWeight.HasValue ? item.UnitWeight.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.ConcreteTemperature.HasValue ? item.ConcreteTemperature.Value.ToString("F1") + " °F" : string.Empty)</td>
+                    <td>@(item.Yield.HasValue ? item.Yield.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.ReleaseTest1.HasValue ? item.ReleaseTest1.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.ReleaseTest2.HasValue ? item.ReleaseTest2.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.ReleaseTestAverage.HasValue ? item.ReleaseTestAverage.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.C28DayTest1.HasValue ? item.C28DayTest1.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.C28DayTest2.HasValue ? item.C28DayTest2.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.C28DayTestAverage.HasValue ? item.C28DayTestAverage.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.OtherTest1.HasValue ? item.OtherTest1.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.OtherTest2.HasValue ? item.OtherTest2.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.OtherTestAverage.HasValue ? item.OtherTestAverage.Value.ToString("F1") : string.Empty)</td>
+                    <td>@(item.OtherTestDate.HasValue ? item.OtherTestDate.Value.ToShortDateString() : string.Empty)</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

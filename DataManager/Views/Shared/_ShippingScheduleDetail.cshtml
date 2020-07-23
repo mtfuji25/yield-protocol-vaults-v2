@@ -1,0 +1,18 @@
+﻿@model IEnumerable<Load>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("begin", DateTime.Today.StartOfWeek(DayOfWeek.Monday))
+    });
+}
+
+<em>@Model.Count() LOADS</em>
+
+@foreach (var item in Model.GroupBy(x => x.JobID, (key, g) => new { JobID = key, Loads = g.ToList() }))
+{
+    Load load = item.Loads.First();
+    <a class="job" href="@Url.Action("Index", parameters.CopyAndAdd("job", item.JobID))">
+        @load.JobName<br />
+        Loads: @string.Join(", ", item.Loads.Select(x => x.LoadNumber))
+    </a>
+}

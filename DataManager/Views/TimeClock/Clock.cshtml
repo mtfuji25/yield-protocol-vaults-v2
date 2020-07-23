@@ -1,0 +1,12 @@
+﻿@model Employee
+
+<p><i class="fas fa-info-circle"></i> @Html.Raw(Page.Message)</p>
+
+@using (Html.BeginForm("Clock", "TimeClock", FormMethod.Post, new { @class = "clock" }))
+{
+    <fieldset class="clock">
+        <input name="Clock" type="submit" value="Clock In" /><br />
+        <input name="Clock" type="submit" value="Clock Out" />
+        @Html.Hidden("EmployeeID", Model.EmployeeID)
+    </fieldset>
+}

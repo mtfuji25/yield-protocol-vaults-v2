@@ -1,0 +1,99 @@
+﻿@model Contact
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.ContactID != 0;
+    List<SelectListItem> displayOptions = new List<SelectListItem>();
+    if (Existing)
+    {
+        displayOptions.Add(new SelectListItem { Text = Model.Company, Value = Model.Company });
+        displayOptions.Add(new SelectListItem { Text = Model.LastFirst, Value = Model.LastFirst });
+    }
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing Contact <strong>@Model.DisplayName</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw"></i> Enter the new Contact's details below:</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.ContactTypeID)</th>
+                <td>@Html.SelectFor(m => m.ContactTypeID, new SelectList(ViewBag.ContactTypes as List<SelectListItem>, "Value", "Text", Model.ContactTypeID))</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.FirstName)</th>
+                <td>@Html.InputFor(m => m.FirstName, new { placeholder = "First" }) @Html.InputFor(m => m.LastName, new { placeholder = "Last" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.DisplayName)</th>
+                <td>@Html.SelectFor(m => m.DisplayName, new SelectList(displayOptions, "Value", "Text", Model.DisplayName), "- Select -", new { @class = "display" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Company)</th>
+                <td>@Html.InputFor(m => m.Company)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EMail)</th>
+                <td>@Html.InputFor(m => m.EMail, Model.EMail)</td>
+            </tr>
+            <tr>
+                <th>Phone</th>
+                <td>
+                @Html.InputFor(m => m.WorkPhone, new { placeholder = "Work" }) @Html.InputFor(m => m.MobilePhone, new { placeholder = "Mobile" })
+                @Html.InputFor(m => m.FaxNumber, new { placeholder = "Fax" }) @Html.InputFor(m => m.HomePhone, new { placeholder = "Home" })
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.StreetAddress)</th>
+                <td>@Html.InputFor(m => m.StreetAddress, new { placeholder = "Street Address" })</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>@Html.InputFor(m => m.City, new { placeholder = "City" }) @Html.SelectFor(m => m.State, Options.States(Model.State), "- State -") @Html.InputFor(m => m.Zip, new { placeholder = "Zip Code" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Notes)</th>
+                <td>@Html.InputFor(m => m.Notes)</td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.ContactID)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters["query"] == null ? parameters : null)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

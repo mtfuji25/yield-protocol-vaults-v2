@@ -1,0 +1,67 @@
+﻿@model IEnumerable<Load>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("begin", DateTime.Today.StartOfWeek(DayOfWeek.Monday))
+    });
+
+    // Variables
+    DateTime begin = Convert.ToDateTime(parameters["begin"]);
+}
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="begin">Week of:</label> @Html.TextBox("begin", begin.ToShortDateString(), new { @class = "week", title = "Week of" })
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+</div>
+
+<table class="calendar">
+    <thead>
+        <tr>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday/Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">
+                <strong class="date">@begin.ToShortDateString()</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+            <td>
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @Html.Partial("_ShippingScheduleDetail", Model.Where(x => x.JobID.HasValue && x.DeliveryDate >= begin && x.DeliveryDate < begin.AddDays(1).AddSeconds(-1)))
+            </td>
+        </tr>
+    </tbody>
+</table>

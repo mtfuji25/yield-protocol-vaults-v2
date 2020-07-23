@@ -1,0 +1,104 @@
+﻿@model RediMixDestination
+@{
+    bool Existing = Model.RediMixDestinationID != 0;
+
+    string p = Request.QueryString["p"];
+    string s = Request.QueryString["s"];
+    string t = Request.QueryString["t"];
+
+    object parameters = new { p = p, s = s, t = t };
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing <strong>@Model.City @Model.State</strong></p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fa fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw" title="Tip"></i> Enter the new Redi-Mix Destination details below.</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.City)</th>
+                <td>@Html.InputFor(m => m.City)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.State)</th>
+                <td>@Html.SelectFor(m => m.State, new SelectList(ViewBag.StatesAbbr as List<SelectListItem>, "Value", "Text", Model.State), "Select State", null)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.ZipCode)</th>
+                <td>@Html.InputFor(m => m.ZipCode)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Latitude)</th>
+                <td>@Html.InputFor(m => m.Latitude)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Longitude)</th>
+                <td>@Html.InputFor(m => m.Longitude)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.NYMilesFromMiddlebury)</th>
+                <td>@Html.InputFor(m => m.NYMilesFromMiddlebury)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VTMilesFromMiddlebury)</th>
+                <td>@Html.InputFor(m => m.VTMilesFromMiddlebury)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.NYMilesFromRutland)</th>
+                <td>@Html.InputFor(m => m.NYMilesFromRutland)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VTMilesFromRutland)</th>
+                <td>@Html.InputFor(m => m.VTMilesFromRutland)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.NYMilesFromCrownPoint)</th>
+                <td>@Html.InputFor(m => m.NYMilesFromCrownPoint)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VTMilesFromCrownPoint)</th>
+                <td>@Html.InputFor(m => m.VTMilesFromCrownPoint)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Active)</th>
+                <td>@Html.SelectFor(m => m.Active, Options.Active(Model.Active))</td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Update"><i class="far fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="far fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.RediMixDestinationID)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

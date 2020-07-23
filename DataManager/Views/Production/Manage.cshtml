@@ -1,0 +1,283 @@
+﻿@model Pour
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.PourID != 0;
+    string sort = parameters["sort"] == null ? string.Empty : parameters["sort"].ToString();
+
+}
+
+<ul class="tabs">
+    <li class="active"><a href="#Pour-Info">Pour Info</a></li>
+    <li><a href="#Testing-Anaylsis">Testing &amp; Anaylsis</a></li>
+    <li><a href="#Non-Conforming-Reports">Non-Conforming Reports</a></li>
+</ul>
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <div class="max">
+
+        <table class="edit tabs">
+            <tbody class="tab" id="Pour-Info">
+                <tr>
+                    <th>@Html.LabelFor(m => m.BedID)</th>
+                    <td>@Html.SelectFor(m => m.BedID, new SelectList(ViewBag.Beds as List<SelectListItem>, "Value", "Text", Model.BedID))</td>
+                    <th>@Html.LabelFor(m => m.Thickness)</th>
+                    <td>@Html.InputFor(m => m.Thickness)</td>
+                    <th>@Html.LabelFor(m => m.MixID)</th>
+                    <td>@Html.SelectFor(m => m.MixID, new SelectList(ViewBag.Mixes as List<SelectListItem>, "Value", "Text", Model.MixID))</td>
+                    <th>@Html.LabelFor(m => m.ThreeInchStrands)</th>
+                    <td>@Html.InputFor(m => m.ThreeInchStrands)</td>
+                </tr>
+
+                <tr>
+                    <th>@Html.LabelFor(m => m.PourDate)</th>
+                    <td>
+                        @Html.InputFor(m => m.PourDate, Existing ? Model.PourDate.ToShortDateString() : string.Empty, null)
+                        @Html.InputFor(m => m.PourTime, Existing && Model.PourTime.HasValue ? Model.PourTime.Value.ToShortTimeString() : string.Empty, new { @class = "time" })
+                    </td>
+                    <th>@Html.LabelFor(m => m.YardsConcrete)</th>
+                    <td>@Html.InputFor(m => m.YardsConcrete)</td>
+                    <th>@Html.LabelFor(m => m.Location)</th>
+                    <td>@Html.InputFor(m => m.Location)</td>
+                    <th>@Html.LabelFor(m => m.FiveInchStrands)</th>
+                    <td>@Html.InputFor(m => m.FiveInchStrands)</td>
+                </tr>
+
+                <tr>
+                    <th>@Html.LabelFor(m => m.PourStatusID)</th>
+                    <td>@Html.SelectFor(m => m.PourStatusID, new SelectList(ViewBag.PourStatuses as List<SelectListItem>, "Value", "Text", Model.PourStatusID))</td>
+                    <th>@Html.LabelFor(m => m.YardsGrout)</th>
+                    <td>@Html.InputFor(m => m.YardsGrout)</td>
+                    <th>@Html.LabelFor(m => m.SlipNumber)</th>
+                    <td>@Html.InputFor(m => m.SlipNumber)</td>
+                    <th>@Html.LabelFor(m => m.SixInchStrands)</th>
+                    <td>@Html.InputFor(m => m.SixInchStrands)</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.JackNumber)</th>
+                    <td colspan="7">@Html.InputFor(m => m.JackNumber)</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.PourScheduleNotes, new { placeholder = "These notes will only appear on the Pour Schedule..." })</th>
+                    <td colspan="3">@Html.InputFor(m => m.PourScheduleNotes)</td>
+                    <th>@Html.LabelFor(m => m.Notes)</th>
+                    <td colspan="3" rowspan="2">@Html.InputFor(m => m.Notes)</td>
+                </tr>
+
+            </tbody>
+
+            <tbody class="tab hide" id="Testing-Anaylsis">
+                <tr class="title">
+                    <th></th>
+                    <td colspan="7">Service</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Air)</th>
+                    <td>@Html.InputFor(m => m.Air)</td>
+                    <th>@Html.LabelFor(m => m.Slump)</th>
+                    <td>@Html.InputFor(m => m.Slump)</td>
+                    <th>@Html.LabelFor(m => m.VSI)</th>
+                    <td>@Html.InputFor(m => m.VSI)</td>
+                    <th>@Html.LabelFor(m => m.UnitWeight)</th>
+                    <td>@Html.InputFor(m => m.UnitWeight)</td>
+
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Yield)</th>
+                    <td>@Html.InputFor(m => m.Yield)</td>
+                    <th>@Html.LabelFor(m => m.AmbientTemperature)</th>
+                    <td>@Html.InputFor(m => m.AmbientTemperature)</td>
+                    <th>@Html.LabelFor(m => m.ConcreteTemperature)</th>
+                    <td>@Html.InputFor(m => m.ConcreteTemperature)</td>
+                    <th>@Html.LabelFor(m => m.NumberOfCylinders)</th>
+                    <td>@Html.InputFor(m => m.NumberOfCylinders)</td>
+
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.Workability)</th>
+                    <td colspan="3">@Html.InputFor(m => m.Workability)</td>
+                    <th>@Html.LabelFor(m => m.Weather)</th>
+                    <td colspan="3">@Html.InputFor(m => m.Weather)</td>
+                </tr>
+                <tr class="title">
+                    <th></th>
+                    <td colspan="7">Breaks</td>
+                </tr>
+                <tr class="title">
+                    <th></th>
+                    <td>Date</td>
+                    <td>Test 1</td>
+                    <td>Test 2</td>
+                    <td>Average</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <th>Release</th>
+                    <td>@Html.InputFor(m => m.ReleaseTestDate, Model.ReleaseTestDate.HasValue ? Model.ReleaseTestDate.Value.ToShortDateString() : null, null)</td>
+                    <td>@Html.InputFor(m => m.ReleaseTest1)</td>
+                    <td>@Html.InputFor(m => m.ReleaseTest2)</td>
+                    <td>@Html.InputFor(m => m.ReleaseTestAverage, new { @readonly = "readonly" })</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <th>28 Days</th>
+                    <td>@Html.InputFor(m => m.C28DayTestDate, Model.C28DayTestDate.HasValue ? Model.C28DayTestDate.Value.ToShortDateString() : null, null)</td>
+                    <td>@Html.InputFor(m => m.C28DayTest1)</td>
+                    <td>@Html.InputFor(m => m.C28DayTest2)</td>
+                    <td>@Html.InputFor(m => m.C28DayTestAverage, new { @readonly = "readonly" })</td>
+                    <td colspan="3"></td>
+                </tr>
+                <tr>
+                    <th>Other</th>
+                    <td>@Html.InputFor(m => m.OtherTestDate, Model.OtherTestDate.HasValue ? Model.OtherTestDate.Value.ToShortDateString() : null, null)</td>
+                    <td>@Html.InputFor(m => m.OtherTest1)</td>
+                    <td>@Html.InputFor(m => m.OtherTest2)</td>
+                    <td>@Html.InputFor(m => m.OtherTestAverage, new { @readonly = "readonly" })</td>
+                    <td colspan="3"></td>
+                </tr>
+
+                <tr class="title">
+                    <th></th>
+                    <td colspan="7">Specifications</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.SpecAir)</th>
+                    <td>@Html.InputFor(m => m.SpecAir) +/- @Html.InputFor(m => m.SpecAirError)</td>
+                    <th>@Html.LabelFor(m => m.SpecMaxSlump)</th>
+                    <td>@Html.InputFor(m => m.SpecMaxSlump)</td>
+                    <th>@Html.LabelFor(m => m.SpecReleaseStrength)</th>
+                    <td>@Html.InputFor(m => m.SpecReleaseStrength)</td>
+                    <th>@Html.LabelFor(m => m.Spec28DayStrength)</th>
+                    <td>@Html.InputFor(m => m.Spec28DayStrength)</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.SpecNotes)</th>
+                    <td colspan="7">@Html.InputFor(m => m.SpecNotes)</td>
+                </tr>
+            </tbody>
+            @if (Existing)
+            {
+                <tbody class="tab hide" id="Non-Conforming-Reports">
+                    <tr>
+                        <td colspan="8">
+
+                            <table class="list">
+                                <thead>
+                                    <tr>
+                                        <th>@Html.SortLink(sort, "Job", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Date Checked", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Mark Number", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Finding", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Action", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Due Date", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Completed", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Completed By", null, null, parameters, null)</th>
+                                        <th>@Html.SortLink(sort, "Completed On", null, null, parameters, null)</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (NonConformingReport item in Model.NonConformingReports)
+                                    {
+                                        @Html.Partial("_NonConformingReport", item)
+                                    }
+                                    @Html.Partial("_NonConformingReport", new NonConformingReport { JobID = Model.DefaultJobID.Value, PourID = Model.PourID })
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                </tbody>
+            }
+            <tbody>
+                <tr>
+                    <th>@Html.LabelFor(m => m.DefaultJobID)</th>
+                    <td>@Html.SelectFor(m => m.DefaultJobID, new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", Model.DefaultJobID))</td>
+                    <th>@Html.LabelFor(m => m.DefaultMarkTypeID)</th>
+                    <td>@Html.SelectFor(m => m.DefaultMarkTypeID, new SelectList(ViewBag.MarkTypes as List<SelectListItem>, "Value", "Text", Model.DefaultMarkTypeID))</td>
+                    <td colspan="4"></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="footer">
+                    <td></td>
+                    <td colspan="7">
+                        @if (Existing)
+                        {
+                            <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                            if (User.IsInRole("Admin"))
+                            {
+                                <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                            }
+                            @Html.HiddenFor(m => m.BedID)
+                        }
+                        else
+                        {
+                            <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                        }
+                        <button data-href="@Url.Action("Index", parameters)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
+
+@if (Existing && Model.Job != null && Model.DefaultMarkTypeID.HasValue)
+{
+    <div class="max">
+        <table class="list">
+            <thead>
+                <tr>
+                    <th>@Html.SortLink(sort, "Job #", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Mark #", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Quantity", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Mark Range", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Camber", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Width", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Length", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Thickness", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Type", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Item Weight", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Total Weight", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "SF", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Total SF", null, null, parameters, null)</th>
+                    <th>@Html.SortLink(sort, "Total LF", null, null, parameters, null)</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (PourDetail item in Model.PourDetails)
+                {
+                    @Html.Partial("_PourDetail", new PourDetail
+                    {
+                        PourDetailID = item.PourDetailID,
+                        PourID = item.PourID,
+                        MarkID = item.MarkID,
+                        Quantity = item.Quantity,
+                        Camber = item.Camber,
+                        MarkRange = item.MarkRange,
+                        Pour = Model,
+                        DefaultJobID = Model.DefaultJobID,
+                        DefaultMarkTypeID = Model.DefaultMarkTypeID
+                    })
+                }
+                @Html.Partial("_PourDetail", new PourDetail
+                {
+                    PourID = Model.PourID,
+                    Pour = Model,
+                    DefaultJobID = Model.DefaultJobID,
+                    DefaultMarkTypeID = Model.DefaultMarkTypeID
+                })
+            </tbody>
+        </table>
+    </div>
+}

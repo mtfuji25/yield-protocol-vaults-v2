@@ -1,0 +1,30 @@
+﻿@model NonConformingReport
+@{
+    bool Existing = Model.NonConformingReportID != 0;
+    string id = Existing ? string.Concat("_", Model.NonConformingReportID) : string.Empty;
+}
+
+<tr class="@(Existing ? "auto-submit" : "add-new")" data-action="@Url.Action(Existing ? "EditNonConformingReport" : "AddNonConformingReport")">
+    <td>@Html.SelectFor(m => m.JobID, new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", Model.JobID), new { id = string.Concat("JobID", id) })</td>
+    <td>@Html.InputFor(m => m.DateChecked, Model.DateChecked.HasValue ? Model.DateChecked.Value.ToShortDateString() : null,  new { id = string.Concat("DateChecked", id) })</td>
+    <td>@Html.InputFor(m => m.MarkNumber, new { id = string.Concat("MarkNumber", id) })</td>
+    <td>@Html.InputFor(m => m.Finding, new { id = string.Concat("Finding", id) })</td>
+    <td>@Html.InputFor(m => m.Action, new { id = string.Concat("Action", id) })</td>
+    <td>@Html.InputFor(m => m.DueDate, Model.DueDate.HasValue ? Model.DueDate.Value.ToShortDateString() : null, new { id = string.Concat("DueDate", id) })</td>
+    <td>@Html.InputFor(m => m.IsCompleted, new { id = string.Concat("IsCompleted", id) })</td>
+    <td>@Html.SelectFor(m => m.CompletedByID, new SelectList(ViewBag.Employees as List<SelectListItem>, "Value", "Text", Model.CompletedByID), new { id = string.Concat("CompletedByID", id) })</td>
+    <td>@Html.InputFor(m => m.CompletedOn, Model.CompletedOn.HasValue ? Model.CompletedOn.Value.ToShortDateString() : null, new { id = string.Concat("CompletedOn", id) })</td>
+    <td>
+        @if (Existing)
+        {
+            @Html.ActionLink("Delete", "DeleteNonConformingReport", new { guid = Model.NonConformingReportID }, new { @class = "delete delete-row-via-ajax" })
+            @Html.HiddenFor(m => m.NonConformingReportID, new { id = string.Concat("NonConformingReportID", id) })
+        }
+        else
+        {
+            @Html.ActionLink("Add", "AddPourDetail", null, new { @class = "add-row-via-ajax" })
+        }
+        @Html.HiddenFor(m => m.PourID)
+    </td>
+</tr>
+

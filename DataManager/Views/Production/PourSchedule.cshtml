@@ -1,0 +1,101 @@
+﻿@model IEnumerable<Pour>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("bed", ""),
+      new KeyValuePair<string, object>("begin", DateTime.Today.StartOfWeek(DayOfWeek.Monday)),
+      new KeyValuePair<string, object>("job", "")
+    });
+
+    // Variables
+    string bed = parameters["bed"].ToString();
+    DateTime begin = Convert.ToDateTime(parameters["begin"]);
+    string job = parameters["job"].ToString();
+}
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "filter" }))
+    {
+        <fieldset>
+            @Html.DropDownList("job", new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", job))
+            @Html.DropDownList("bed", new SelectList(ViewBag.Beds as List<SelectListItem>, "Value", "Text", bed))
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="begin">Week of:</label> @Html.TextBox("begin", begin.ToShortDateString(), new { @class = "week", title = "Week of" })
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+</div>
+
+<table class="calendar">
+    <thead>
+        <tr>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday/Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td rowspan="2">
+                <strong class="date">@begin.ToShortDateString()</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+            <td rowspan="2">
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+            <td>
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong class="date">@((begin = begin.AddDays(1)).ToShortDateString())</strong>
+                @foreach (Pour item in Model.Where(x => x.PourDate >= begin && x.PourDate < begin.AddDays(1).AddSeconds(-1)))
+                {
+                    @Html.Partial("_PourScheduleDetail", item)
+                }
+            </td>
+        </tr>
+    </tbody>
+</table>

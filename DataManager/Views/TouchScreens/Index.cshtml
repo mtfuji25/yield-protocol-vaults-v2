@@ -1,0 +1,97 @@
+﻿@model PagedList.IPagedList<DataManager.Models.TouchScreen>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("active", ""),
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("page", "1"),
+      new KeyValuePair<string, object>("show", "40"),
+      new KeyValuePair<string, object>("sort", "id")
+    });
+
+    // Variables
+    string active = parameters["active"].ToString();
+    string order = parameters["order"].ToString();
+    string page = parameters["page"].ToString();
+    string show = parameters["show"].ToString();
+    string sort = parameters["sort"].ToString();
+}
+
+<p><a href="@Url.Action("Add", parameters)"><i class="fas fa-plus fa-fw"></i> Add a New Touch Screen</a></p>
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "filter" }))
+    {
+        <fieldset>
+            <label for="show">Show</label>
+            @Html.DropDownList("show", Options.Show(show))
+            @Html.DropDownList("active", new SelectList(Options.Active(), "Value", "Text", active), "All", null)
+            @Html.Hidden("page", page)
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "search" }))
+    {
+        <fieldset>
+            <button type="submit"><i class="fas fa-sync fa-fw"></i> Refresh</button>
+            @Html.Hidden("refresh", true)
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Id", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Name", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "IP Address", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Http Status", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Last Status Check", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Active", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataManager.Models.TouchScreen item in Model)
+            {
+                <tr data-href="@Url.Action("Edit", parameters.CopyAndAdd("guid", item.TouchScreenID))">
+                    <td>@item.TouchScreenID</td>
+                    <td>@item.TouchScreenName</td>
+                    <td>@item.IPAddress</td>
+                    <td>
+                        @if (string.IsNullOrEmpty(item.HttpStatus))
+                        {
+                            <span>Unkown</span>
+                        }
+                        else
+                        {
+                            @item.HttpStatus
+                            if (string.IsNullOrEmpty(item.PingException))
+                            {
+                                <br />@item.PingException
+                            }
+                        }
+                    </td>
+                    <td>@(item.LastStatusCheck.HasValue ? item.LastStatusCheck.Value.ToString() : "Never")</td>
+                    <td>@(item.Active ? "Yes" : "No")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(Model, p => Url.Action("Index", parameters.CopyAndReplace("page", p)), new PagedListRenderOptions
+    {
+        ItemSliceAndTotalFormat = "viewing {0} - {1} of {2}",
+        DisplayItemSliceAndTotal = true,
+        LinkToFirstPageFormat = "« first",
+        LinkToPreviousPageFormat = "‹ previous",
+        LinkToIndividualPageFormat = "{0}",
+        LinkToNextPageFormat = "next ›",
+        LinkToLastPageFormat = "last »"
+    })
+}
+else
+{
+    <p>There are no Touch Screens at this time.</p>
+}
+

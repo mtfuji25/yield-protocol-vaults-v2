@@ -1,0 +1,736 @@
+﻿/*LAYOUT*/
+html {
+    background: #e9e9e9;
+    background: linear-gradient(to bottom, #e9e9e9 0%,#ffffff 100%);
+    min-height: 101%;
+}
+
+body {
+    color: #222;
+    font: 400 normal 10px/1.5 Verdana, Arial, sans-serif;
+    width: 100%;
+}
+
+/*NAV*/
+nav {
+    background: #007fff;
+    font-size: 12px;
+    height: 100%;
+    left: 0;
+    line-height: 30px;
+    overflow-x: hidden;
+    position: fixed;
+    top: 0;
+    width: 240px;
+    z-index: 999;
+}
+
+nav > ul {
+    margin: 24px 0;
+}
+
+nav li {
+    position: relative;
+}
+
+nav li a {
+    color: #fff;
+    display: block;
+    padding: 0 9px;
+}
+
+nav li a:hover {
+    background: #003eff;
+}
+
+nav ul.sub {
+    background: #007fff;
+    box-sizing: border-box;
+    /*display: none;*/
+}
+
+nav ul.sub a {
+    padding: 0 9px 0 27px;
+}
+
+nav ul.reports a {
+    padding: 0 9px 0 45px;
+}
+
+/*HEADER*/
+header {
+    background: #fff;
+    line-height: 24px;
+    padding: 24px 36px;
+    margin: 0 0 0 240px;
+}
+
+header h1 {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+header h1 i {
+    color: #003eff;
+    font-size: 24px !important;
+}
+
+header span.version {
+    float: right;
+}
+
+/*DIV.MANAGE*/
+div.manage {
+    line-height: 30px;
+    padding: 1px;
+    min-width: 1280px;
+}
+
+div.manage button {
+    width: auto;
+}
+
+div.manage div.search,
+div.manage fieldset.search,
+div.manage form.search {
+    float: left;
+}
+
+div.manage form.params label {
+    display: inline;
+    float: none;
+}
+
+div.manage form.params input[type=checkbox] {
+    margin: 0 0 0 15px;
+}
+
+div.manage form.search input {
+    width: 240px;
+}
+
+div.manage fieldset.filter,
+div.manage form.filter {
+    float: right;
+}
+
+div.manage div.filter {
+    font-size: 12px;
+    float: right;
+    padding: 0 9px 0 0;
+}
+
+div.manage form.split {
+    padding: 0 0 30px;
+}
+
+p.manage {
+    max-width: 1280px;
+}
+
+div.manage #column-chooser {
+    clear: both;
+    display: none;
+}
+
+div.manage #column-chooser button {
+    float: right;
+}
+
+div.manage #column-chooser label {
+    width: auto;
+}
+
+/*MAIN*/
+main {
+    display: block;
+    margin: 0 0 0 240px;
+    min-width: 1280px;
+    padding: 36px;
+}
+
+main a {
+    color: #007fff;
+}
+
+main a:hover {
+    text-decoration: underline;
+}
+
+main a.button {
+    min-width: 96px;
+}
+
+main h1, main h2, main h3, main h4 {
+    font-size: 12px;
+    margin: 0 0 18px;
+}
+
+main p, main ul {
+    font-size: 12px;
+    margin: 0 0 18px;
+}
+
+main i.fa {
+    font-size: 13px;
+}
+
+main ol {
+    line-height: 18px;
+    list-style: decimal;
+    margin: 0 0 0 18px;
+}
+
+main p i.fa-exclamation-triangle {
+    color: #f00;
+}
+
+
+main ul {
+    list-style-type: disc;
+    margin: 0 0 18px 36px;
+    text-decoration: none;
+}
+
+/*FORMS*/
+form {
+    margin: 0 0 18px;
+    font-size: 12px;
+}
+
+form.dialog {
+    line-height:2.0;
+}
+
+
+form a.same_as {
+    margin: 0 0 0 99px;
+}
+
+form button,
+form input[type=button],
+form input[type=submit],
+form input[type=reset] {
+    width: 96px;
+}
+
+form button.ui-button.cancel,
+form button.ui-button.delete {
+    background: #fddfdf;
+    border-color: #f1a899;
+    color: #5f3f3f;
+}
+
+form button.ui-button.cancel:hover,
+form button.ui-button.delete:hover {
+    background: #cc0000;
+    color: #fff;
+}
+
+form a.history {
+    float: right;
+    width: 96px;
+}
+
+form fieldset fieldset {
+    margin: 0 0 9px;
+}
+
+form legend {
+    font-weight: 700;
+}
+
+form input[type=text],
+form input[type=email],
+form input[type=number],
+form input[type=password],
+form input[type=tel],
+form input[type=url], select, textarea {
+    border: 1px solid #c5c5c5;
+    box-sizing: border-box;
+    margin: 0 0 3px;
+    padding: 3px;
+    width: 288px;
+}
+
+form input[type=text]:focus,
+form input[type=email]:focus,
+form input[type=number]:focus,
+form input[type=password]:focus,
+form input[type=tel]:focus,
+form input[type=url]:focus, select:focus, textarea:focus {
+    border-color: #003eff;
+}
+
+input.tel-masked {
+    background: none;
+    border: 0;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+form select {
+    min-width: 60px;
+    width: auto !important;
+}
+
+form input.date,
+th input.date,
+form input.week,
+th input.week {
+    width: 142px !important;
+}
+
+th input.date,
+th input.week {
+    border: 1px solid #c5c5c5;
+    padding: 1px 2px;
+}
+
+th input.date:focus,
+th input.week:focus {
+    border-color: #003eff;
+}
+
+form input[type=tel],
+form input[type=number],
+form input.time,
+form #SSN,
+form #ZipCode {
+    width: 142px;
+}
+
+form textarea {
+    width: 100%;
+}
+
+form label {
+    display: block;
+    float: left;
+    text-align: right;
+    padding: 0 6px 0 0;
+    width: 93px;
+}
+
+form ol.questions label {
+    display: inline;
+    float: none;
+    width: auto;
+}
+
+form label.fa-calendar,
+th label.fa-calendar,
+form a.fa-envelope {
+    color: #333;
+    font-size: 13px;
+    line-height: 30px;
+    position: absolute;
+    margin: 0 0 0 -18px;
+    max-width: 18px !important;
+}
+
+th label.fa-calendar {
+    margin: 2px 0 0 -18px;
+}
+
+
+form label.checkbox {
+    display: inline;
+    float: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+}
+
+form label.checkbox input.block {
+    width: auto !important;
+    margin: 0 0 0 99px;
+}
+
+form label.file input {
+    height: 22px;
+    left: -1em;
+    opacity: 0;
+    position: absolute;
+    top: 0;
+    z-index: 500;
+}
+
+form span.file_name {
+    margin: 0 6px;
+}
+
+form textarea {
+    height: 120px;
+}
+
+form textarea#NotAvailableComments {
+    height: 63px;
+}
+
+div.manage form label.fa-calendar {
+    margin-top: 9px;
+}
+
+form.login a.message {
+    display: none !important;
+}
+
+form.login button {
+    margin: 0 0 0 99px;
+}
+
+/*TABS*/
+table.tabs tbody.tab {
+    background: #f8f8f8;
+    border: 1px solid #c5c5c5 !important;
+    position: relative;
+    z-index: 5;
+}
+
+ul.tabs {
+    list-style: none;
+    margin: 0 0 -1px 36px;
+    position: relative;
+    z-index: 10;
+}
+
+ul.tabs li {
+    border: 1px solid #c5c5c5;
+    border-width: 1px 1px 0;
+    border-radius: 6px 6px 0 0;
+    display: inline-block;
+    padding: 3px 6px;
+}
+
+ul.tabs li a {
+    color: #555;
+    display: block;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+ul.tabs li a:hover {
+    color: #007fff;
+}
+
+ul.tabs li.active {
+    background: #f8f8f8;
+}
+
+ul.tabs li.active a {
+    color: #000;
+}
+
+
+/*TIMECLOCK*/
+#timeclock main {
+    margin: 0 auto;
+    min-width: 360px;
+    max-width: 360px !important;
+    width: 360px;
+}
+
+
+form.clock {
+    margin: 0 auto;
+    max-width: 360px !important;
+}
+
+form.clock input {
+    font-size: 54px;
+    width: 360px;
+}
+
+form.clock ol {
+    list-style: none;
+    margin: 0;
+    overflow: hidden;
+    width: 360px;
+}
+
+form.clock ol li {
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    cursor: pointer;
+    float: left;
+    font-size: 36px;
+    height: 120px;
+    line-height: 120px;
+    text-align: center;
+    width: 120px;
+}
+
+form.clock ul li:hover {
+    background-color: #003eff;
+    color: #fff;
+}
+
+/*ERRORS*/
+div.ui-state-error {
+    padding: 18px 0 0;
+    margin: 0 0 18px;
+}
+
+i.fa-exclamation-triangle {
+    color: #cc0000;
+}
+
+/*TABLE.CALENDAR*/
+table.calendar {
+    background: #fff;
+    border: 1px solid #c5c5c5;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    font-size: 11px;
+    margin: 0 0 18px;
+    min-width: 1280px;
+    table-layout: fixed;
+    width: 100%;
+}
+
+table.calendar td, table.calendar th {
+    border: 1px solid #c5c5c5;
+    padding: 3px 18px 3px 9px;
+    text-align: left;
+}
+
+table.calendar strong.date {
+    display: block;
+    text-align: right;
+}
+
+table.calendar a.job {
+    background: #eee;
+    color: #000;
+    display: block;
+    margin: 0 0 12px;
+    padding: 3px 6px;
+}
+
+table.calendar a.job:hover {
+    background: #007fff;
+    color: #fff;
+    text-decoration: none;
+}
+
+table.calendar a.job strong {
+    border-bottom: 1px solid #000;
+    display: block;
+    margin: 0 0 6px;
+}
+
+table.calendar em {
+    color: #003eff;
+    font-size: 12px;
+    font-style: normal;
+}
+
+/*TABLE.EDIT*/
+table.edit {
+    border-collapse: collapse;
+    min-width: 960px;
+}
+
+table.edit td {
+    line-height: 30px;
+    padding: 1px 3px;
+    vertical-align: top;
+}
+
+table.edit th {
+    line-height: 30px;
+    padding: 1px 9px;
+    text-align: right !important;
+    vertical-align: top;
+    width: 180px;
+}
+
+table.edit label {
+    display: inline;
+    float: none;
+    padding: 0;
+    width: auto;
+}
+
+table.edit tr.submit td {
+    background: transparent;
+    border: 0;
+    padding: 3px;
+}
+
+
+/*TABLE.LIST*/
+table.list {
+    background: #fff;
+    border: 1px solid #c5c5c5;
+    border-collapse: collapse;
+    box-sizing: border-box;
+    font-size: 11px;
+    margin: 0 0 18px;
+    min-width: 1280px;
+    width: 100%;
+}
+
+table.list td, table.list th {
+    border: 1px solid #c5c5c5;
+    padding: 3px 18px 3px 9px;
+    text-align: left;
+}
+
+table.list th {
+    color: #222;
+    overflow: hidden;
+    padding: 0 6px 0 0;
+    position: relative;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+table.list td.control,
+table.list th.control {
+    max-width: 180px;
+    width: 180px;
+}
+
+table.list th a,
+table.list th span {
+    display: block;
+    padding: 3px 15px 3px 9px;
+}
+
+table.list th a.asc {
+    background: url(/Assets/Img/asc.png) no-repeat 100% 50%;
+}
+
+table.list th a.dsc {
+    background: url(/Assets/Img/dsc.png) no-repeat 100% 50%;
+}
+
+table.list th a.active {
+    color: #333;
+}
+
+table.list th a:hover {
+    text-decoration: none;
+}
+
+table.list td.control label,
+table.list th.control label {
+    max-width: 100%;
+    text-align: left;
+    width: 100%;
+}
+
+table.list th.control a {
+    display: inline;
+}
+
+/*table.list th select {
+    margin: 0;
+    padding: 0 1px;
+}*/
+
+
+table.list tr[data-href],
+table.list tr.open,
+table.list tr.dialog {
+    cursor: pointer;
+}
+
+table.list tr.total td {
+    background: #eee;
+}
+
+table tr td.expandable {
+    background: rgba(0, 127, 255, 0.25);
+    cursor: pointer;
+}
+
+table.list th {
+    background: linear-gradient(#c5c5c5, #fff);
+    vertical-align: bottom;
+}
+
+table.list th:hover {
+    background: linear-gradient(#fff, #c5c5c5);
+}
+
+table.list tr:hover td {
+    background: #ededed;
+}
+
+table.list i.fa-refresh {
+    color: #6ba53a;
+    font-size: 30px;
+}
+
+.max {
+    min-width:100%;
+    overflow-y:hidden;
+}
+
+/*PAGINATION*/
+ul.pagination {
+    overflow: hidden;
+    padding: 9px 0;
+    margin: 0;
+    text-align: center;
+    min-width: 1280px;
+}
+
+ul.pagination li {
+    display: inline;
+    padding: 0 9px;
+}
+
+ul.pagination li.active {
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+ul.pagination_top li {
+    padding: 0;
+}
+
+ul.pagination li.PagedList-pageCountAndLocation a,
+ul.pagination li.PagedList-ellipses a {
+    color: #222;
+    text-decoration: none;
+}
+
+ul.pagination li.PagedList-pageCountAndLocation,
+ul.pagination li.PagedList-ellipses,
+ul.pagination li.PagedList-skipToLast {
+    border: 0;
+}
+
+
+
+/*DIV.VCARD*/
+div.vcard {
+    display: none;
+}
+
+/*FOOTER*/
+footer {
+    display: none;
+}
+
+/*CLASSES*/
+.hide {
+    display: none;
+}
+
+.numeric {
+    text-align: right !important;
+}
+
+.error {
+    color: red;
+}
+
+.blank {
+    border: 0 !important;
+}

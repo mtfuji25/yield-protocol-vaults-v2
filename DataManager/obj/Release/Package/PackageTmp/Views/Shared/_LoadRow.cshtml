@@ -1,0 +1,34 @@
+﻿@model Load
+@{
+    string id = string.Concat("_", Model.LoadID);
+}
+
+
+<tr class="auto-submit" data-action="@Url.Action("EditLoad")">
+    <td>@Html.InputFor(m => m.DeliveryDate, Model.DeliveryDate.HasValue ? Model.DeliveryDate.Value.ToShortDateString() : null, new { @class = "date", id = string.Concat("DeliveryDate", id) })</td>
+    <td>@Html.InputFor(m => m.DeliveryTime, Model.DeliveryTime.HasValue ? Model.DeliveryTime.Value.ToShortTimeString() : null, new { @class = "time", id = string.Concat("DeliveryTime", id) })</td>
+    <td>@Html.InputFor(m => m.SiteDepartureTime, Model.SiteDepartureTime.HasValue ? Model.SiteDepartureTime.Value.ToShortTimeString() : null, new { @class = "time", id = string.Concat("SiteDepartureTime", id) })</td>
+    <td>@Html.SelectFor(m => m.DriverID, new SelectList(ViewBag.Drivers as List<SelectListItem>, "Value", "Text", Model.DriverID), new { id = string.Concat("DriverID", id) })</td>
+    <td>@Html.SelectFor(m => m.IndependentDriverID, new SelectList(ViewBag.IndependantDrivers as List<SelectListItem>, "Value", "Text", Model.IndependentDriverID), new { id = string.Concat("IndependentDriverID", id) })</td>
+    <td>@Html.TextBoxFor(m => m.Notes, new { id = string.Concat("Notes", id) })</td>
+    <td>@Html.InputFor(m => m.HasDriverBeenContacted, new { id = string.Concat("HasDriverBeenContacted", id) })
+    <td>@Html.InputFor(m => m.LoadNumber, new { id = string.Concat("LoadNumber", id) })</td>
+    <td>@Html.SelectFor(m => m.VehicleID, new SelectList(ViewBag.Tractors as List<SelectListItem>, "Value", "Text", Model.VehicleID), new { id = string.Concat("VehicleID", id) })</td>
+    <td>
+        @if (Model.JobID.HasValue)
+        {
+            @Model.Job.JobNumber
+            @Html.HiddenFor(m => m.JobID, new { id = string.Concat("JobID", id) })
+        }
+        else
+        {
+            @Html.SelectFor(m => m.JobID, new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", Model.JobID), new { id = string.Concat("JobID", id) })
+        }
+    </td>
+    <td>@Html.InputFor(m => m.IsLoaded, new { id = string.Concat("IsLoaded", id) })</td>
+    <td>@Html.SelectFor(m => m.LoadStatusID, new SelectList(ViewBag.LoadStatuses as List<SelectListItem>, "Value", "Text", Model.LoadStatusID), new { id = string.Concat("LoadStatusID", id) })</td>
+    <td>
+        @Html.ActionLink("Delete", "DeleteLoad", new { guid = Model.LoadID }, new { @class = "delete delete-row-via-ajax" })
+        @Html.HiddenFor(m => m.LoadID, new { id = string.Concat("LoadID", id) })
+    </td>
+</tr>

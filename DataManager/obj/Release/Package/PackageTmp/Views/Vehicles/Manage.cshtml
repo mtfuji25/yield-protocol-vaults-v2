@@ -1,0 +1,143 @@
+﻿@model Vehicle
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.VehicleTypeID != 0;
+    Employee driver = Model.DefaultDriver();
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing Vehicle <strong>@Model.VehicleLabel</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw" title="Tip"></i> Enter the new Vehicle details below.</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.VehicleName)</th>
+                <td>@Html.InputFor(m => m.VehicleName)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VehicleCode)</th>
+                <td>@Html.InputFor(m => m.VehicleCode)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VehicleNumber)</th>
+                <td>@Html.InputFor(m => m.VehicleNumber)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Make)</th>
+                <td>@Html.InputFor(m => m.Make, new { placeholder = "Make" }) @Html.InputFor(m => m.Year, new { placeholder = "Year" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VIN)</th>
+                <td>@Html.InputFor(m => m.VIN)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Registration)</th>
+                <td>@Html.InputFor(m => m.Registration)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.RegistrationDate)</th>
+                <td>@Html.InputFor(m => m.RegistrationDate, Model.RegistrationDate.HasValue ? Model.RegistrationDate.Value.ToShortDateString() : null, null) @Html.InputFor(m => m.RegistrationExpiration, Model.RegistrationExpiration.HasValue ? Model.RegistrationExpiration.Value.ToShortDateString() : null, null)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VehicleTypeID)</th>
+                <td>@Html.SelectFor(m => m.VehicleTypeID, new SelectList(ViewBag.VehicleTypes as List<SelectListItem>, "Value", "Text", Model.VehicleTypeID))</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.TrailerTypeID)</th>
+                <td>@Html.SelectFor(m => m.TrailerTypeID, new SelectList(ViewBag.TrailerTypes as List<SelectListItem>, "Value", "Text", Model.TrailerTypeID))</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.LocationID)</th>
+                <td>@Html.SelectFor(m => m.LocationID, new SelectList(ViewBag.Locations as List<SelectListItem>, "Value", "Text", Model.LocationID)) </td>
+            </tr>
+            <tr>
+                <th>Default Driver</th>
+                <td>
+                    @Html.TextBox("DriverName", driver != null ? driver.LastFirst : string.Empty, new { @class = "autocomplete", data_target = "#DefaultDriverID", data_url = "/Suggest/Employees?driver=true", placeholder = "Search Drivers…" })
+                    @Html.Hidden("DefaultDriverID")
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EZPass)</th>
+                <td>@Html.InputFor(m => m.EZPass)</td>
+            </tr>
+            <tr>
+                <th>Size</th>
+                <td>@Html.InputFor(m => m.Length, new { placeholder = "Length" }) @Html.InputFor(m => m.NumberOfAxles, new { placeholder = "Number Of Axles" })</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>@Html.InputFor(m => m.Weight, new { placeholder = "Weight" })@Html.InputFor(m => m.GrossVehicleWeightRating, new { placeholder = "Gross Vehicle Weight Rating" }) @Html.InputFor(m => m.GrossAxleWeightRating, new { placeholder = "Gross Axle Weight Rating" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.IsOnRoad)</th>
+                <td>@Html.SelectFor(m => m.IsOnRoad, Options.YesNo(Model.IsOnRoad))</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.CurrentMeterReading)</th>
+                <td>@Html.InputFor(m => m.CurrentMeterReading)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.ShouldExportUsage)</th>
+                <td>@Html.SelectFor(m => m.ShouldExportUsage, Options.YesNo(Model.ShouldExportUsage))</td>
+            </tr>
+            <tr>
+                <th>Service</th>
+                <td>@Html.InputFor(m => m.LastService, Model.LastService.HasValue ? Model.LastService.Value.ToShortDateString() : null, new { placeholder = "Last" }) @Html.InputFor(m => m.NextService, Model.NextService.HasValue ? Model.NextService.Value.ToShortDateString() : null, new { placeholder = "Next" })</td>
+            </tr>
+            <tr>
+                <th>Oil</th>
+                <td>@Html.InputFor(m => m.LastOil, new { placeholder = "Last" }) @Html.InputFor(m => m.NextOil, new { placeholder = "Next" })</td>
+            </tr>
+            <tr>
+                <th>Grease</th>
+                <td>@Html.InputFor(m => m.LastGrease, new { placeholder = "Last" }) @Html.InputFor(m => m.NextGrease, new { placeholder = "Next" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.IsActive)</th>
+                <td>@Html.SelectFor(m => m.IsActive, Options.Active(Model.IsActive))</td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Maintenance">Maintenance</button>
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.VehicleID)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters["query"] == null ? parameters : null)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

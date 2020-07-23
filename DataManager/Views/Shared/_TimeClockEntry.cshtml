@@ -1,0 +1,50 @@
+﻿@model TimeClockEntry
+
+
+@using (Html.BeginForm("EditTimeClockEntry", "Time", FormMethod.Post, new { autocomplete = "off", @class = "dialog" }))
+{
+    @Html.ValidationSummary()
+    <fieldset>
+        <label for="Employee">Employee</label>
+        @Html.TextBox("EmployeeName", Model.EmployeeID != 0 ? Model.Employee.LastFirst : string.Empty, new { @class = "autocomplete", data_target = "#EmployeeID", data_url = "/Suggest/Employees", placeholder = "Search Employees…" })
+        @Html.HiddenFor(m => m.EmployeeID)
+    </fieldset>
+    <fieldset>
+        <label for="ClockInDate">Clock In</label>
+        @Html.TextBox("ClockInDate", Model.ClockIn.HasValue ? Model.ClockIn.Value.ToShortDateString() : string.Empty, new { @class = "date" })
+        @Html.TextBox("ClockInTime", Model.ClockIn.HasValue ? Model.ClockIn.Value.ToShortTimeString() : string.Empty, new { @class = "time" })
+    </fieldset>
+    <fieldset>
+        <label for="ClockOutDate">Clock Out</label>
+        @Html.TextBox("ClockOutDate", Model.ClockOut.HasValue ? Model.ClockOut.Value.ToShortDateString() : string.Empty, new { @class = "date" })
+        @Html.TextBox("ClockOutTime", Model.ClockOut.HasValue ? Model.ClockOut.Value.ToShortTimeString() : string.Empty, new { @class = "time" })
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.HoursWorked) @Html.InputFor(m => m.HoursWorked)
+    </fieldset>
+    <fieldset>
+        <label for="DepartmentId">Cost Center</label>
+        @Html.SelectFor(m => m.DepartmentId, new SelectList(ViewBag.Departments as List<SelectListItem>, "Value", "Text", Model.DepartmentId))
+    </fieldset>
+    <fieldset>
+        <label for="VehicleCode">Vehicle Driven</label>
+        @Html.TextBox("VehicleCode", Model.DrivenVehicleID.HasValue ? Model.Vehicle.VehicleCode : string.Empty, new { @class = "autocomplete", data_target = "#DrivenVehicleID", data_url = "/Suggest/Vehicles", placeholder = "Search Vehicles…" })
+        @Html.HiddenFor(m => m.DrivenVehicleID)
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Lunch) @Html.InputFor(m => m.Lunch)
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Notes) @Html.InputFor(m => m.Notes)
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Approved) @Html.CheckBox("Approved", Model.ApprovedDateTime.HasValue)
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.ApprovedBy) @Html.InputFor(m => m.ApprovedBy, new { @readonly = "readonly" })
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.ApprovedDateTime) @Html.InputFor(m => m.ApprovedDateTime, new { @readonly = "readonly" })
+        @Html.HiddenFor(m => m.TimeClockEntryID)
+    </fieldset>
+}

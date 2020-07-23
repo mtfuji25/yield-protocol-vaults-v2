@@ -1,0 +1,19 @@
+﻿@model Pour
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("bed", ""),
+      new KeyValuePair<string, object>("begin", DateTime.Today.StartOfWeek(DayOfWeek.Monday)),
+      new KeyValuePair<string, object>("job", "")
+    });
+}
+
+<a class="job" href="@Url.Action("EditPour", parameters.CopyAndAdd("guid", Model.PourID))">
+    <strong>Bed: @Model.Bed.BedName</strong>
+    Job: @(Model.DefaultJobID.HasValue ? Model.Job.JobNumber : string.Empty)<br />
+    Time: @(Model.PourTime.HasValue ? Model.PourTime.Value.ToShortTimeString() : string.Empty)<br />
+    Mix: @(Model.MixID.HasValue ? Model.Mix.MixName : string.Empty)<br />
+    Yardage: @(Model.YardsConcrete.HasValue ? Model.YardsConcrete.Value.ToString("F2") : string.Empty)<br />
+    Pieces: @(Model.PourDetails.Any() ? string.Join("; ", Model.PourDetails.Select(x => x.Mark.MarkNumber + (string.IsNullOrEmpty(x.MarkRange) ? string.Empty : "(" + x.MarkRange + ")"))) : string.Empty)<br />
+    Notes: <br />@Html.Raw(string.IsNullOrEmpty(Model.PourScheduleNotes) ? string.Empty : Model.PourScheduleNotes.Replace(Environment.NewLine, "<br />"))
+</a>

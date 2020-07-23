@@ -1,0 +1,38 @@
+﻿@model IEnumerable<ChangeLog>
+@{
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().AddKey("guid", ViewContext.RouteData.Values["guid"]);
+}
+
+<p>
+    <a href="@Url.Action("Edit", parameters)"><i class="fas fa-arrow-left fa-fw"></i> Back</a>
+</p>
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th><span>Date</span></th>
+                <th><span>Field</span></th>
+                <th><span>Old Value</span></th>
+                <th><span>New Value</span></th>
+                <th><span>Changed By</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ChangeLog item in Model)
+                {
+                <tr>
+                    <td>@item.DateChanged.ToString()</td>
+                    <td>@System.Text.RegularExpressions.Regex.Replace(item.PropertyName, "(\\B[A-Z])", " $1").Replace("Id", "").Trim()</td>
+                    <td>@item.OldValue</td>
+                    <td>@item.NewValue</td>
+                    <td>@Html.ActionLink(item.UserName, "EditUser", new { guid = item.UserId }, new { target = "_blank" })</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>There have been no changes made.</p>
+}

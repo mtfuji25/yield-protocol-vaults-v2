@@ -1,0 +1,29 @@
+﻿
+<p><i class="fas fa-info-circle"></i> @Html.Raw(Page.Message)</p>
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "clock" }))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+   <fieldset>
+        @Html.TextBox("EmployeeNumber", null, new { maxlength = "4", pattern = "[0-9]{4}", required = "required" })
+    </fieldset>
+    <ol class="keypad">
+        <li>1</li>
+        <li>2</li>
+        <li>3</li>
+        <li>4</li>
+        <li>5</li>
+        <li>6</li>
+        <li>7</li>
+        <li>8</li>
+        <li>9</li>
+        <li class="clear">Clear</li>
+        <li>0</li>
+        <li class="back"><i class="fas fa-arrow-left fa-fw"></i></li>
+    </ol>
+}

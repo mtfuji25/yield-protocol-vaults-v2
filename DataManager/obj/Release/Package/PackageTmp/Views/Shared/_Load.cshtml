@@ -1,0 +1,42 @@
+﻿@model Load
+@using (Html.BeginForm("EditTimeClockEntry", "Time", FormMethod.Post, new { autocomplete = "off", @class = "dialog" }))
+{
+    @Html.ValidationSummary()
+    <fieldset>
+        <label for="DeliveryDate">Date/Time</label>
+        @Html.InputFor(m => m.DeliveryDate, Model.DeliveryDate.HasValue ? Model.DeliveryDate.Value.ToShortDateString() : string.Empty, new { @class = "date" })
+        @Html.InputFor(m => m.DeliveryTime, Model.DeliveryTime.HasValue ? Model.DeliveryTime.Value.ToShortTimeString() : string.Empty, new { @class = "time" })
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.DriverID)
+        @Html.SelectFor(m => m.DriverID, new SelectList(ViewBag.Drivers as List<SelectListItem>, "Value", "Text", Model.DriverID))
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.VehicleID)
+        @Html.SelectFor(m => m.VehicleID, new SelectList(ViewBag.Tractors as List<SelectListItem>, "Value", "Text", Model.VehicleID))
+    </fieldset>
+        <fieldset>
+        @Html.LabelFor(m => m.TrailerID)
+        @Html.SelectFor(m => m.TrailerID, new SelectList(ViewBag.Trailers as List<SelectListItem>, "Value", "Text", Model.TrailerID))
+    </fieldset>
+        <fieldset>
+        @Html.LabelFor(m => m.IndependentDriverID)
+        @Html.SelectFor(m => m.IndependentDriverID, new SelectList(ViewBag.IndependantDrivers as List<SelectListItem>, "Value", "Text", Model.IndependentDriverID))
+    </fieldset>
+        <fieldset>
+        @Html.LabelFor(m => m.DepartmentID)
+        @Html.SelectFor(m => m.DepartmentID, new SelectList(ViewBag.Departments as List<SelectListItem>, "Value", "Text", Model.DepartmentID))
+    </fieldset>
+        <fieldset>
+        @Html.LabelFor(m => m.JobID)
+        @Html.SelectFor(m => m.JobID, new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", Model.JobID))
+    </fieldset>
+        <fieldset>
+        @Html.LabelFor(m => m.RouteID)
+        @Html.SelectFor(m => m.RouteID, new SelectList(ViewBag.Routes as List<SelectListItem>, "Value", "Text", Model.RouteID))
+    </fieldset>
+    <fieldset>
+        @Html.LabelFor(m => m.Notes)
+        @Html.InputFor(m => m.Notes)
+    </fieldset>
+}

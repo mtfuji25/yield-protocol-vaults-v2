@@ -1,0 +1,82 @@
+﻿@model Department
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.DepartmentID != 0;
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing Department <strong>@Model.DepartmentName</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw" title="Tip"></i> Enter the new Department details below.</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.DepartmentCode)</th>
+                <td>@Html.InputFor(m => m.DepartmentCode)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.DepartmentName)</th>
+                <td>@Html.InputFor(m => m.DepartmentName)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.ViewPointOffsetAccount)</th>
+                <td>@Html.InputFor(m => m.ViewPointOffsetAccount)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.DefaultLunch)</th>
+                <td>
+                    @Html.SelectFor(m => m.DefaultLunch, Options.YesNo(Model.DefaultLunch))
+                    <em>When you select yes, employees within this department will be automatically marked as taking lunch during shifts longer than 6 hours.</em>
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.AutoAdjustClockIn)</th>
+                <td>
+                    @Html.SelectFor(m => m.AutoAdjustClockIn, Options.YesNo(Model.AutoAdjustClockIn))
+                    <em>When you select yes, employees within this department will have their clock-in times rounded up to their start time if they have one specified.</em>
+                </td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.DefaultAssignmentTypeID)
+                        @Html.HiddenFor(m => m.DefaultCostCenterID)
+                        @Html.HiddenFor(m => m.DepartmentID)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

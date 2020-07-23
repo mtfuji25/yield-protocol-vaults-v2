@@ -1,0 +1,143 @@
+﻿@model IEnumerable<TimeClockEntryView>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+        new KeyValuePair<string, object>("begin", ""),
+        new KeyValuePair<string, object>("department", ""),
+        new KeyValuePair<string, object>("employee", ""),
+        new KeyValuePair<string, object>("end", ""),
+        new KeyValuePair<string, object>("errors", "false"),
+        new KeyValuePair<string, object>("incomplete", "false"),
+        new KeyValuePair<string, object>("order", "asc"),
+        new KeyValuePair<string, object>("range", "this-week"),
+        new KeyValuePair<string, object>("sort", "cost-center")
+    });
+
+    // Variables
+    string employee = parameters["employee"].ToString();
+    bool errors = parameters["errors"].ToString() == "true";
+    bool incomplete = parameters["incomplete"].ToString() == "true";
+    string range = parameters["range"].ToString();
+    string order = parameters["order"].ToString();
+    string sort = parameters["sort"].ToString();
+
+    // Select Lists
+    List<SelectListItem> DateRanges = ViewBag.DateRanges as List<SelectListItem>;
+}
+
+<p>
+    <a class="dialog" data-width="600px" href="@Url.Action("AddTimeClockEntry", parameters)"><i class="fas fa-plus fa-fw"></i> Add Time Clock Entry</a>
+    |
+    <a class="dialog" data-width="600px" href="@Url.Action("AddAbsence", parameters)"><i class="fas fa-plus fa-fw"></i> Add Absence</a>
+</p>
+
+<div class="manage">
+
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "params" }))
+    {
+        <fieldset>
+            <label for="range">Dates:</label> @Html.DropDownList("range", new SelectList(DateRanges, "Value", "Text", range))
+            <span class="date_range">@Html.TextBox("begin", parameters["begin"], new { @class = "date", title = "Start Date" }) - @Html.TextBox("end", parameters["end"], new { @class = "date", title = "End Date" })</span>
+
+            @Html.DropDownList("department", new SelectList(ViewBag.Departments as List<SelectListItem>, "Value", "Text", parameters["department"]))
+
+            @Html.DropDownList("employee", new SelectList(ViewBag.Employees as List<SelectListItem>, "Value", "Text", parameters["employee"]))
+
+            @Html.CheckBox("incomplete", incomplete) <label for="incomplete">Show Only Incomplete Time Cards</label>
+            @Html.CheckBox("errors", errors) <label for="errors">Show Only Time Cards with Errors</label>
+
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+
+
+    @using (Html.BeginForm("SaveViewSetting", "Account", FormMethod.Post, new { @class = "ajax", data_ajax_action = "hide", data_ajax_done = "restoreIcon", id = "column-chooser" }))
+    {
+        <fieldset>
+            @Html.ColumnChoser(ViewBag.Columns as List<SelectListItem>)
+            @Html.Hidden("Path", Request.Url.AbsolutePath)
+            <button type="reset"><i class="fas fa-times fa-fw"></i> Close</button>
+            <button type="submit"><i class="fas fa-save fa-fw"></i> Save</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Employee", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Start Time", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Day Of Week", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Clock In", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Original Clock In", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Lunch", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Clock Out", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Original Clock Out", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Hours Worked", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Cost Center", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Vehcile Driven", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Approved", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Approved On", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Approved By", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Notes", null, null, parameters, null)</th>
+                <th class="numeric">@Html.SortLink(sort, "Status", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+
+        @foreach (TimeClockEntryView dept in Model)
+        {
+            <tbody>
+                <tr>
+                    <td class="expandable" colspan="16" data-target="#dept-@dept.Department.ToSafeUrl().Replace("/", string.Empty)"><span>-</span> @dept.Department</td>
+                </tr>
+            </tbody>
+            <tbody id="dept-@dept.Department.ToSafeUrl().Replace("/", string.Empty)">
+                @foreach (TimeClockEntry item in dept.TimeClockEntries)
+                {
+                    <tr class="entry dialog" data-action="@Url.Action("EditTimeClockEntry", parameters.CopyAndAdd("guid", item.TimeClockEntryID))" data-title="Edit Time Clock Entry" data-width="600px">
+                        <td>@item.Employee.LastName, @item.Employee.FirstName</td>
+                        <td class="numeric">@(item.StartTime.HasValue ? item.StartTime.Value.ToShortTimeString() : string.Empty)</td>
+                        <td class="numeric">@item.DayOfWeek</td>
+                        <td class="numeric">@item.ClockIn</td>
+                        <td class="numeric">@item.OriginalClockIn</td>
+                        <td class="numeric">@Html.CheckBox("lunch_" + item.TimeClockEntryID, item.Lunch, new { @readonly = "readonly" })</td>
+                        <td class="numeric">@item.ClockOut</td>
+                        <td class="numeric">@item.OriginalClockOut</td>
+                        <td class="numeric">@(item.HoursWorked.HasValue ? item.HoursWorked.Value.ToString("F2") : string.Empty)</td>
+                        <td>@(item.Employee.DepartmentID.HasValue ? item.Employee.Department.DepartmentName : string.Empty) - @item.CostCenterID</td>
+                        <td>@(item.DrivenVehicleID.HasValue ? item.Vehicle.VehicleCode : string.Empty)</td>
+                        <td class="numeric">@Html.CheckBox("approved_" + item.TimeClockEntryID, item.Approved, new { @readonly = "readonly" })</td>
+                        <td class="numeric">@item.ApprovedDateTime</td>
+                        <td>@item.ApprovedBy</td>
+                        <td class="numeric">@item.Notes</td>
+                        <td class="numeric error">@item.Status</td>
+                    </tr>
+                }
+                <tr class="total">
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="numeric">@(dept.HoursWorked.HasValue ? dept.HoursWorked.Value.ToString("F2") : "0.00")</td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                    <td class="blank"></td>
+                </tr>
+                <tr class="dept-@dept.Department.ToSafeUrl()">
+                    <td colspan="16">&nbsp;</td>
+                </tr>
+            </tbody>
+        }
+
+    </table>
+}

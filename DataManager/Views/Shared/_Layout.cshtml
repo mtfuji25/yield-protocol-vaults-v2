@@ -1,0 +1,224 @@
+﻿@{
+    AspNetUser AspNetUser = ViewBag.AspNetUser as AspNetUser;
+}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <title>@Page.Title - @Site.Name</title>
+    @MetaTags.Render()
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Styles/jQueryUI", "~/Styles/Global")@Scripts.Render("~/Scripts/Analogue")
+    <script>FontAwesomeConfig = { searchPseudoElements: true };</script>
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+</head>
+
+<body class="@Page.ClassName" id="@Page.Id">
+    <nav class="@(HttpContext.Current.IsDebuggingEnabled ? "debug" : "")">
+        <ul>
+            @if (Request.IsAuthenticated)
+            {
+                <li class="manage">
+                    <a class="toggle" href="#user-nav"><i class="fa fa-user fa-fw"></i> @AspNetUser.FullName</a>
+                    <ul class="sub lists hide" id="user-nav">
+                        <li><a href="@Url.Action("Manage", "Account")">Manage Your Account</a></li>
+                        @if (AspNetUser.EmployeeID.HasValue)
+                        {
+                            <li>@Html.ActionLink("Time Clock", "TimeClock", "Account")</li>
+                        }
+                        <li>@Html.ActionLink("Clear View Settings", "Clear", "Account")</li>
+                    </ul>
+                </li>
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Precast Manager") ||
+                    User.IsInRole("Precast Production") ||
+                    User.IsInRole("Project Manager") ||
+                    User.IsInRole("Ready-Mix Manager") ||
+                    User.IsInRole("Dispatch Manager"))
+                {
+                    <li>
+                        <a class="toggle" href="#contacts-jobs-nav"><i class="fas fa-address-card fa-fw"></i> Contacts &amp; Jobs</a>
+                        <ul class="sub lists hide" id="contacts-jobs-nav">
+                            <li>@Html.ActionLink("Contacts", "Index", "Contacts")</li>
+                            <li>@Html.ActionLink("Jobs", "Index", "Jobs")</li>
+                            <li>@Html.ActionLink("Job List Report", "List", "Jobs")</li>
+                        </ul>
+                    </li>
+                }
+                if (User.IsInRole("Shop"))
+                {
+                    <li><a href="@Url.Action("Index", "Dispatch")"><i class="fas fa-tasks fa-fw"></i> Dispatch</a></li>
+                }
+                else
+                {
+                    <li>
+                        <a class="toggle" href="#dispatch-nav"><i class="fas fa-tasks fa-fw"></i> Dispatch</a>
+                        <ul class="sub lists hide" id="dispatch-nav">
+                            <li>@Html.ActionLink("Dispatch", "Index", "Dispatch")</li>
+                            <li>@Html.ActionLink("Shipping Schedule", "ShippingSchedule", "Dispatch")</li>
+                        </ul>
+                    </li>
+                }
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Precast Manager") ||
+                    User.IsInRole("Precast Production") ||
+                    User.IsInRole("Project Manager") ||
+                    User.IsInRole("Ready-Mix Manager") ||
+                    User.IsInRole("Dispatch Manager"))
+                {
+                    <li>
+                        <a class="toggle" href="#production-nav"><i class="fas fa-industry fa-fw"></i> Production</a>
+                        <ul class="sub lists hide" id="production-nav">
+                            <li>@Html.ActionLink("Pours", "Index", "Production")</li>
+                            <li>@Html.ActionLink("Pour Schedule", "PourSchedule", "Production")</li>
+                            <li>
+                                <a class="reports toggle" href="#production-nav-reports"><i class="fas fa-file-alt fa-fw"></i> Reports</a>
+                                <ul class="reports lists hide" id="production-nav-reports">
+                                    <li>@Html.ActionLink("Production Analysis", "Analysis", "Production")</li>
+                                    <li>@Html.ActionLink("Strand Usage", "StrandUsage", "Production")</li>
+                                    <li>@Html.ActionLink("Non-Conforming Reports", "NonConformingReports", "Production")</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Precast Manager") ||
+                    User.IsInRole("Ready-Mix Manager"))
+                {
+                    <li><a href="@Url.Action("Index", "Employees")"><i class="fas fa-users fa-fw"></i> Employees</a></li>
+                }
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Precast Manager") ||
+                    User.IsInRole("Ready-Mix Manager") ||
+                    User.IsInRole("Dispatch Manager"))
+                {
+                    <li>
+                        <a class="toggle" href="#time-nav"><i class="fas fa-clock fa-fw"></i> Time</a>
+                        <ul class="sub lists hide" id="time-nav">
+                            <li>@Html.ActionLink("Time Cards", "TimeCards", "Time")</li>
+                            <li>@Html.ActionLink("Time Clock Manager", "Index", "Time")</li>
+                            <li>
+                                <a class="reports toggle" href="#time-nav-reports"><i class="fas fa-file-alt fa-fw"></i> Reports</a>
+                                <ul class="reports lists hide" id="time-nav-reports">
+                                    <li>@Html.ActionLink("Attendance", "Attendance", "Time")</li>
+                                    <li>@Html.ActionLink("Employee List", "EmployeeList", "Time")</li>
+                                    <li>@Html.ActionLink("Vacation Summary", "VacationSummary", "Time")</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                if (User.IsInRole("Admin") ||
+                    User.IsInRole("Ready-Mix Manager") ||
+                    User.IsInRole("Dispatch Manager") ||
+                    User.IsInRole("Shop"))
+                {
+                    <li>
+                        <a class="toggle" href="#vehicles-nav"><i class="fas fa-truck fa-fw"></i> Vehicles</a>
+                        <ul class="sub lists hide" id="vehicles-nav">
+                            <li>@Html.ActionLink("Vehicles", "Index", "Vehicles")</li>
+                            <li>@Html.ActionLink("Vehicle Maintenance", "Index", "VehicleMaintenance")</li>
+                            <li>
+                                <a class="reports toggle" href="#vehicles-nav-reports"><i class="fas fa-file-alt fa-fw"></i> Reports</a>
+                                <ul class="reports lists hide" id="vehicles-nav-reports">
+                                    <li>@Html.ActionLink("All Maintenance", "All", "VehicleMaintenance")</li>
+                                    <li>@Html.ActionLink("Fuel Usage & State Mileage", "FuelUsageAndStateMileage", "Vehicles")</li>
+                                    <li>@Html.ActionLink("Maintenace History", "History", "VehicleMaintenance")</li>
+                                    <li>@Html.ActionLink("Maintenance History by Date", "HistoryByDate", "VehicleMaintenance")</li>
+                                    <li>@Html.ActionLink("Overdue Maintenace", "OverdueMaintenace", "VehicleMaintenance")</li>
+                                    <li>@Html.ActionLink("Vehicle Usage", "UsageReport", "Vehicle")</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                if (User.IsInRole("Admin"))
+                {
+                    <li>
+                        <a class="toggle" href="#system-nav"><i class="fas fa-cogs fa-fw"></i> System</a>
+                        <ul class="sub lists hide" id="system-nav">
+                            <li>@Html.ActionLink("Beds", "Index", "Beds")</li>
+                            <li>@Html.ActionLink("Contact Types", "Index", "ContactTypes")</li>
+                            <li>@Html.ActionLink("Departments", "Index", "Departments")</li>
+                            <li>@Html.ActionLink("Employee Status", "Index", "EmployeeStatus")</li>
+                            <li>@Html.ActionLink("Job Status", "Index", "JobStatus")</li>
+                            <li>@Html.ActionLink("Load Status", "Index", "LoadStatus")</li>
+                            <li>@Html.ActionLink("Load Types", "Index", "LoadTypes")</li>
+                            <li>@Html.ActionLink("Locations", "Index", "Locations")</li>
+                            <li>@Html.ActionLink("Mark Size Types", "Index", "MarkSizeTypes")</li>
+                            <li>@Html.ActionLink("Mark Types", "Index", "MarkTypes")</li>
+                            <li>@Html.ActionLink("Meter Types", "Index", "MeterTypes")</li>
+                            <li>@Html.ActionLink("Mixes", "Index", "Mixes")</li>
+                            <li>@Html.ActionLink("Pour Status", "Index", "PourStatus")</li>
+                            <li>@Html.ActionLink("Routes", "Index", "Routes")</li>
+                            <li>@Html.ActionLink("Search Index", "Index", "Search")</li>
+                            <li>@Html.ActionLink("Trailer Types", "Index", "TrailerTypes")</li>
+                            <li>@Html.ActionLink("Touch Screens", "Index", "Touchscreens")</li>
+                            <li>@Html.ActionLink("Users", "Index", "Users")</li>
+                            <li>@Html.ActionLink("Vehicle Types", "Index", "VehicleTypes")</li>
+                            <li>@Html.ActionLink("Weight Formula Types", "Index", "WeightFormulaTypes")</li>
+                        </ul>
+                    </li>
+                }
+                switch (Request.Url.AbsolutePath.ToLower())
+                {
+                    case "/beds":
+                    case "/contacts":
+                    case "/employees":
+                    case "/jobs":
+                    case "/production":
+                    case "/time":
+                    case "/time/timecards":
+                    case "/vehicles":
+                        <li>
+                            <a class="toggle" href="#view-nav"><i class="fas fa-eye fa-fw"></i> View</a>
+                            <ul class="sub lists hide" id="view-nav">
+                                <li><a class="show-column-chooser" href="#column-chooser">Choose Columns&hellip;</a></li>
+                            </ul>
+                        </li>
+                        break;
+                }
+                <li class="logout">
+                    @if (User.IsMasquerading())
+                    {
+                        <a href="@Url.Action("StopMasquerade", "Account")"><i class="fas fa-sign-out-alt fa-fw"></i> Stop Masquerading</a>
+                    }
+                    else
+                    {
+                        <a href="@Url.Action("Logout", "Account")" title="Logout @AspNetUser.UserName"><i class="fas fa-sign-out-alt fa-fw"></i> Logout</a>
+                    }
+                </li>
+            }
+            else
+            {
+                <li class="dashboard"><a href="http://jpcarrara.com/" target="_blank"><i class="fas fa-external-link-alt fa-fw"></i> @Site.Name</a></li>
+                <li class="login"><a href="@Url.Action("Login", "Account")"><i class="fas fa-sign-in-alt fa-fw"></i> Login</a></li>
+            }
+        </ul>
+    </nav>
+    <header>
+        <span class="version">
+            <em>v</em>@ViewBag.AssemblyVersion
+            @if (User.IsInRole("Admin"))
+            {
+                <b>@(ViewBag.Elapsed.ToString(@"mm\:ss\.ff"))</b>
+            }
+        </span>
+        <h1><i class="fas fa-cogs" aria-hidden="true"></i> @Page.Title</h1>
+    </header>
+    <main>
+        @RenderBody()
+    </main>
+    @Site.vCard
+    @if (Request.IsAuthenticated)
+    {
+        <div data-first="@AspNetUser.FirstName" data-id="@AspNetUser.Id" data-last="@AspNetUser.LastName" data-role="@string.Join(",", ((ClaimsIdentity)User.Identity).Roles())" id="user_profile"></div>
+    }
+    <footer>
+        &copy; @DateTime.Today.Year @Site.Name
+    </footer>
+    @Scripts.Render("~/Scripts/jQuery", "~/Scripts/jQueryUI", "~/Scripts/Global")
+</body>
+</html>

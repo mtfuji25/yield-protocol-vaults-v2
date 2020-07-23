@@ -1,0 +1,35 @@
+﻿@model PourDetail
+@{
+    bool Existing = Model.MarkID != 0;
+    Mark mark = Model.GetMark();
+    string id = Existing ? string.Concat("_", Model.PourDetailID) : string.Empty;
+}
+<tr class="@(Existing ? "auto-submit" : "add-new")" data-action="@Url.Action(Existing ? "EditPourDetail" : "AddPourDetail")">
+    <td>@Html.SelectFor(m => m.Mark.JobID, new SelectList(ViewBag.Jobs as List<SelectListItem>, "Value", "Text", mark.JobID), new { id = string.Concat("JobID", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.MarkNumber, mark.MarkNumber, new { id = string.Concat("MarkNumber", id) })</td>
+    <td>@Html.InputFor(m => m.Quantity, new { id = string.Concat("Quantity", id) })</td>
+    <td>@Html.InputFor(m => m.MarkRange, new { id = string.Concat("MarkRange", id) })</td>
+    <td>@Html.InputFor(m => m.Camber, new { id = string.Concat("Camber", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.Width, mark.Width, new { id = string.Concat("Width", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.Length, mark.Length, new { id = string.Concat("Length", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.Thickness, mark.Thickness, new { id = string.Concat("Thickness", id) })</td>
+    <td>@Html.SelectFor(m => m.Mark.MarkTypeID, new SelectList(ViewBag.MarkTypes as List<SelectListItem>, "Value", "Text", mark.MarkTypeID.HasValue ? mark.MarkTypeID : Model.DefaultMarkTypeID), new { id = string.Concat("MarkTypeID", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.Weight, mark.Weight, new { id = string.Concat("Weight", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.Weight, mark.Weight, new {  id = string.Concat("TotalWeight", id), @readonly = "readonly" })</td>
+    <td>@Html.InputFor(m => m.Mark.SquareFeet, mark.SquareFeet, new { id = string.Concat("SquareFeet", id) })</td>
+    <td>@Html.InputFor(m => m.Mark.SquareFeet, mark.SquareFeet, new {  id = string.Concat("TotalSquareFeet", id), @readonly = "readonly" })</td>
+    <td>@Html.InputFor(m => m.Mark.Length, mark.Length, new {  id = string.Concat("TotalLength", id), @readonly = "readonly" })</td>
+    <td>
+        @if (Existing)
+        {
+            @Html.ActionLink("Delete", "DeletePourDetail", new { guid = Model.PourDetailID }, new { @class = "delete delete-row-via-ajax" })
+            @Html.HiddenFor(m => m.MarkID, new { id = string.Concat("MarkID", id) })
+            @Html.HiddenFor(m => m.PourDetailID, new { id = string.Concat("PourDetailID", id) })
+        }
+        else
+        {
+            @Html.ActionLink("Add", "AddPourDetail", null, new { @class = "add-row-via-ajax" })
+        }
+        @Html.HiddenFor(m => m.PourID, new { id = string.Concat("PourID", id) })
+    </td>
+</tr>

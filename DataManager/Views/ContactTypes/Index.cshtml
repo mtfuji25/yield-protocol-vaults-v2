@@ -1,0 +1,66 @@
+﻿@model PagedList.IPagedList<ContactType>
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues().WithDefaults(new List<KeyValuePair<string, object>> {
+      new KeyValuePair<string, object>("order", "asc"),
+      new KeyValuePair<string, object>("page", "1"),
+      new KeyValuePair<string, object>("show", "40"),
+      new KeyValuePair<string, object>("sort", "id")
+    });
+
+    // Variables
+    string order = parameters["order"].ToString();
+    string page = parameters["page"].ToString();
+    string show = parameters["show"].ToString();
+    string sort = parameters["sort"].ToString();
+}
+
+<p><a href="@Url.Action("Add", parameters)"><i class="fas fa-plus fa-fw"></i> Add a New Contact Type</a></p>
+
+<div class="manage">
+    @using (Html.BeginForm(null, null, FormMethod.Get, new { @class = "filter" }))
+    {
+        <fieldset>
+            <label for="show">Show</label>
+            @Html.DropDownList("show", Options.Show(show))
+            @Html.Hidden("page", page)
+            <button type="submit">Go</button>
+        </fieldset>
+    }
+</div>
+
+@if (Model.Any())
+{
+    <table class="list">
+        <thead>
+            <tr>
+                <th>@Html.SortLink(sort, "Id", null, null, parameters, null)</th>
+                <th>@Html.SortLink(sort, "Contact Type", null, null, parameters, null)</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (ContactType item in Model)
+            {
+                <tr data-href="@Url.Action("Edit", parameters.CopyAndAdd("guid", item.ContactTypeID))">
+                    <td>@item.ContactTypeID</td>
+                    <td>@item.ContactTypeName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @Html.PagedListPager(Model, p => Url.Action("Index", parameters.CopyAndReplace("page", p)), new PagedListRenderOptions
+    {
+        ItemSliceAndTotalFormat = "viewing {0} - {1} of {2}",
+        DisplayItemSliceAndTotal = true,
+        LinkToFirstPageFormat = "« first",
+        LinkToPreviousPageFormat = "‹ previous",
+        LinkToIndividualPageFormat = "{0}",
+        LinkToNextPageFormat = "next ›",
+        LinkToLastPageFormat = "last »"
+    })
+}
+else
+{
+    <p>There are no Contact Types at this time.</p>
+}
+

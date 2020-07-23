@@ -1,0 +1,46 @@
+﻿@model AspNetUser
+
+<p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+
+@using (Html.BeginForm(null, null, null, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.FirstName)</th>
+                <td>@Html.InputFor(m => m.FirstName, new { placeholder = "First" }) @Html.InputFor(m => m.LastName, new { placeholder = "Last" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EmailAddress)</th>
+                <td>@Html.InputFor(m => m.EmailAddress, Model.Email, new { required = "required" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.NewPassword)</th>
+                <td>
+                    @Html.InputFor(m => m.NewPassword, new { required = "required" })
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.ConfirmPassword)</th>
+                <td>
+                    @Html.InputFor(m => m.ConfirmPassword, new { required = "required" })
+                    <strong id="RandomPassword"></strong>
+                </td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                    @Html.HiddenFor(m => m.Id)
+                    <button data-href="@Url.Action("Index")" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

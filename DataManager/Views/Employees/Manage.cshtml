@@ -1,0 +1,131 @@
+﻿@model Employee
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = Model.EmployeeID != 0;
+}
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing Employee <strong>@Model.FullName</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw"></i> Enter the new employee's details below:</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.EmployeeNumber)</th>
+                <td>@Html.InputFor(m => m.EmployeeNumber)</td>
+            </tr>
+
+            <tr>
+                <th>Name</th>
+                <td>@Html.InputFor(m => m.FirstName, new { placeholder = "First" }) @Html.InputFor(m => m.LastName, new { placeholder = "Last" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Phone)</th>
+                <td>@Html.InputFor(m => m.Phone, new { placeholder = "Home" }) @Html.InputFor(m => m.Mobile, new { placeholder = "Mobile" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EmergencyContactName)</th>
+                <td>@Html.InputFor(m => m.EmergencyContactName, new { placeholder = "Name" }) @Html.InputFor(m => m.EmergencyContactPhone, new { placeholder = "Phone" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Street)</th>
+                <td>@Html.InputFor(m => m.Street, new { placeholder = "Street" })</td>
+            </tr>
+            <tr>
+                <th></th>
+                <td>@Html.InputFor(m => m.City, new { placeholder = "City" }) @Html.SelectFor(m => m.State, Options.States(Model.State), "- State -") @Html.InputFor(m => m.Zip, new { placeholder = "Zip Code" })</td>
+            </tr>
+            <tr>
+                <th>SSN / Birth Date</th>
+                <td>@Html.InputFor(m => m.SSN, new { placeholder = "SSN" }) @Html.InputFor(m => m.BirthDate, Model.BirthDate.HasValue ? Model.BirthDate.Value.ToShortDateString() : null, new { placeholder = "Birth Date" })</td>
+            </tr>
+            <tr>
+                <th>Employment Dates</th>
+                <td>@Html.InputFor(m => m.StartDate, Model.StartDate.HasValue ? Model.StartDate.Value.ToShortDateString() : null, new { placeholder = "Start Date" }) @Html.InputFor(m => m.EndDate, Model.EndDate.HasValue ? Model.EndDate.Value.ToShortDateString() : null, new { placeholder = "End Date" })</td>
+            </tr>
+            <tr>
+                <th>Shift</th>
+                <td>@Html.InputFor(m => m.ShiftStartTime, Model.ShiftStartTime.HasValue ? Model.ShiftStartTime.Value.ToShortTimeString() : null, new { @class = "time", placeholder = "Start Time" }) @Html.InputFor(m => m.ShiftEndTime, Model.ShiftEndTime.HasValue ? Model.ShiftEndTime.Value.ToShortTimeString() : null, new { @class = "time", placeholder = "End Time" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.VacationHours)</th>
+                <td>@Html.InputFor(m => m.VacationHours)</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Rate)</th>
+                <td>@Html.InputFor(m => m.Rate)</td>
+            </tr>
+            <tr>
+                <th>Access</th>
+                <td>
+                    @Html.InputFor(m => m.IsDriver) @Html.LabelFor(m => m.IsDriver)
+                    @Html.InputFor(m => m.IsHourly) @Html.LabelFor(m => m.IsHourly)
+                    @Html.InputFor(m => m.IsProjectManager) @Html.LabelFor(m => m.IsProjectManager)
+                </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.LocationID)</th>
+                <td>@Html.SelectFor(m => m.LocationID, new SelectList(ViewBag.Locations as List<SelectListItem>, "Value", "Text", Model.LocationID)) </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.DepartmentID)</th>
+                <td>@Html.SelectFor(m => m.DepartmentID, new SelectList(ViewBag.Departments as List<SelectListItem>, "Value", "Text", Model.DepartmentID)) </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EmployeeStatusID)</th>
+                <td>@Html.SelectFor(m => m.EmployeeStatusID, new SelectList(ViewBag.EmployeeStatuses as List<SelectListItem>, "Value", "Text", Model.EmployeeStatusID)) </td>
+            </tr>
+            <tr>
+                <th>Vehicle</th>
+                <td>
+                    @Html.TextBox("VehicleCode", Model.VehicleID.HasValue ? Model.Vehicle.VehicleCode : string.Empty, new { @class = "autocomplete", data_target = "#VehicleID", data_url = "/Suggest/Vehicles", placeholder = "Search Vehicles…" })
+                    @Html.Hidden("VehicleID")
+                </td>
+            </tr>
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <a class="history button" href="@Url.Action("History", parameters.CopyAndAdd("guid", Model.EmployeeID))"><i class="fas fa-history fa-fw"></i> History</a>
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.EmployeeID)
+                        @Html.HiddenFor(m => m.DefaultAssignmentTypeID)
+                        @Html.HiddenFor(m => m.DefaultCostCenterID)
+                        @Html.HiddenFor(m => m.IsAdministrator)
+                        @Html.HiddenFor(m => m.IsRediMixVisible)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters["query"] == null ? parameters : null)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

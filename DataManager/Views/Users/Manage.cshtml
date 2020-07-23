@@ -1,0 +1,103 @@
+﻿@model AspNetUser
+@{
+    // Querystring
+    RouteValueDictionary parameters = Request.QueryString.ToRouteValues();
+
+    // Variables
+    bool Existing = !Model.NewUser;
+    List<Microsoft.AspNet.Identity.EntityFramework.IdentityRole> Roles = ViewBag.Roles as List<Microsoft.AspNet.Identity.EntityFramework.IdentityRole>;
+    if (Existing)
+    {
+        Model.Role = Roles.Where(r => r.Users.Any(u => u.UserId == Model.Id)).First().Name;
+    }
+}
+
+
+@if (Existing)
+{
+    <p><i class="fas fa-pencil-alt fa-fw"></i> You are editing User <strong>@Model.FullName</strong>:</p>
+}
+else if (Page.Message != null)
+{
+    <p>@Html.Raw(ViewData.ModelState.IsValid ? "<i class=\"fas fa-info-circle fa-fw\"></i> " : "<i class=\"fas fa-exclamation-triangle fa-fw\"></i>") @Html.Raw(Page.Message)</p>
+}
+else
+{
+    <p><i class="fas fa-info-circle fa-fw"></i> Enter the new User's details below:</p>
+}
+
+@using (Html.BeginForm(null, null, parameters, FormMethod.Post, null))
+{
+    if (!ViewData.ModelState.IsValid)
+    {
+        <div class="ui-state-error ui-corner-all">
+            @Html.ValidationSummary()
+        </div>
+    }
+    <table class="edit">
+        <tbody>
+            <tr>
+                <th>@Html.LabelFor(m => m.FirstName)</th>
+                <td>@Html.InputFor(m => m.FirstName, new { placeholder = "First" }) @Html.InputFor(m => m.LastName, new { placeholder = "Last" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.EmailAddress)</th>
+                <td>@Html.InputFor(m => m.EmailAddress, Model.Email, new { required = "required" })</td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Role)</th>
+                <td>@Html.SelectFor(m => m.Role, new SelectList(ViewBag.RolesList as List<SelectListItem>, "Value", "Text", Model.Role), null, new { required = "required" }) </td>
+            </tr>
+            <tr>
+                <th>@Html.LabelFor(m => m.Active)</th>
+                <td>@Html.SelectFor(m => m.Active, Options.Active(Model.Active))</td>
+            </tr>
+
+            @if (Existing)
+            {
+                @*<tr>
+                    <th>Employee</th>
+                    <td>
+                        @Html.TextBox("EmployeeName", Model.EmployeeID.HasValue ? Model.Employee.LastFirst : string.Empty, new { @class = "autocomplete", data_target = "#EmployeeID", data_url = "/Suggest/Employees", placeholder = "Search Employees…" })
+                        @Html.Hidden("EmployeeID")
+                    </td>
+                </tr>*@
+                <tr>
+                    <th>@Html.LabelFor(m => m.NewPassword)</th>
+                    <td>@Html.InputFor(m => m.NewPassword)</td>
+                </tr>
+                <tr>
+                    <th>@Html.LabelFor(m => m.ConfirmPassword)</th>
+                    <td>@Html.InputFor(m => m.ConfirmPassword)</td>
+                </tr>
+                <tr>
+                    <th>Last Login</th>
+                    <td>@(string.IsNullOrEmpty(Model.LastLoginDate.ToString()) ? "Never" : Model.LastLoginDate.ToString())</td>
+                </tr>
+                <tr>
+                    <th>Last Updated</th>
+                    <td>@Model.LastUpdated.ToString()</td>
+                </tr>
+            }
+            <tr class="footer">
+                <td></td>
+                <td>
+                    @if (Existing)
+                    {
+                        <button name="Action" type="submit" value="Update"><i class="fas fa-save fa-fw"></i> Update</button>
+                        if (User.IsInRole("Admin"))
+                        {
+                            <button name="Action" type="submit" value="Delete"><i class="fas fa-trash-alt fa-fw"></i> Delete</button>
+                        }
+                        @Html.HiddenFor(m => m.Id)
+                    }
+                    else
+                    {
+                        <button name="Action" type="submit" value="Create"><i class="fas fa-plus fa-fw"></i> Create</button>
+                    }
+                    <button data-href="@Url.Action("Index", parameters["query"] == null ? parameters : null)" name="redirect" type="button" value="Cancel"><i class="fas fa-times fa-fw"></i> Cancel</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}
